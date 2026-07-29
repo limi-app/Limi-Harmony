@@ -1,4 +1,4 @@
-import { RuleIds } from '../model/RuleIds';
+import { RuleIds } from '../logic/Rule';
 import { PreferencesHelper } from '../utils/PreferencesHelper';
 import { NavigationItem, PreferenceGroup, SwitchItem } from '../components/PreferenceGroup';
 import { bundleManager } from '@kit.AbilityKit';
@@ -34,7 +34,7 @@ export struct SettingPage {
         PreferenceGroup({ title: $r('app.string.about') }) {
           NavigationItem({
             title: $r('app.string.about_limi'),
-            summary: `版本：${this.appVersion}`,
+            summary: $r('app.string.version_label', this.appVersion),
             showArrow: false,
             onNavClick: () => {
             },

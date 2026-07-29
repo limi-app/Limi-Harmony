@@ -1,6 +1,6 @@
 import { relationalStore } from '@kit.ArkData';
 import { common } from '@kit.AbilityKit';
-import { LimiHistory } from '../model/LimiHistory';
+import { LimiHistory } from '../data/model/LimiHistory';
 
 const DB_NAME: string = 'limi_room.db';
 const TABLE_NAME: string = 'limi_history';

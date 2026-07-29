@@ -211,4 +211,57 @@ export function buildUrl(parsed: ParsedUrl): string {
   return result;
 }
 
+export function rebuildUrlWithQuery(parsed: ParsedUrl, newQuery: string): string {
+  const result: ParsedUrl = {
+    protocol: parsed.protocol,
+    host: parsed.host,
+    port: parsed.port,
+    path: parsed.path,
+    query: newQuery,
+    fragment: parsed.fragment,
+  };
+  return buildUrl(result);
+}
+
+export function filterParams(query: string, targetParams: string[]): string {
+  if (query.length === 0) {
+    return '';
+  }
+  const pairs = query.split('&');
+  const kept: string[] = [];
+  for (let i = 0; i < pairs.length; i++) {
+    const pair = pairs[i];
+    const eqIdx = pair.indexOf('=');
+    const key = eqIdx >= 0 ? pair.substring(0, eqIdx) : pair;
+    let found = false;
+    for (let j = 0; j < targetParams.length; j++) {
+      if (key === targetParams[j]) {
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      kept.push(pair);
+    }
+  }
+  return kept.join('&');
+}
+
+export function filterParamsByPrefix(query: string, prefix: string): string {
+  if (query.length === 0) {
+    return '';
+  }
+  const pairs = query.split('&');
+  const kept: string[] = [];
+  for (let i = 0; i < pairs.length; i++) {
+    const pair = pairs[i];
+    const eqIdx = pair.indexOf('=');
+    const key = eqIdx >= 0 ? pair.substring(0, eqIdx) : pair;
+    if (!key.startsWith(prefix)) {
+      kept.push(pair);
+    }
+  }
+  return kept.join('&');
+}
+
 export { parseUrl, ParsedUrl };

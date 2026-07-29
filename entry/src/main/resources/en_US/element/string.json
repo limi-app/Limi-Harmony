@@ -235,6 +235,10 @@
     {
       "name": "process_link",
       "value": "Process Link"
+    },
+    {
+      "name": "version_label",
+      "value": "Version: %{public}s"
     }
   ]
 }

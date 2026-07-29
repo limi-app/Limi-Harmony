@@ -235,6 +235,10 @@
     {
       "name": "process_link",
       "value": "处理链接"
+    },
+    {
+      "name": "version_label",
+      "value": "版本：%{public}s"
     }
   ]
 }

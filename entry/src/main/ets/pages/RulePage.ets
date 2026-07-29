@@ -1,4 +1,4 @@
-import { RuleIds } from '../model/RuleIds';
+import { RuleIds } from '../logic/Rule';
 import { PreferencesHelper } from '../utils/PreferencesHelper';
 import { PreferenceGroup, SwitchItem } from '../components/PreferenceGroup';
 

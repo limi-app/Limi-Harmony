@@ -1,4 +1,4 @@
-import { parseUrl, buildUrl, ParsedUrl } from '../../../utils/LinkExtractor';
+import { parseUrl, ParsedUrl, rebuildUrlWithQuery } from '../../../utils/LinkExtractor';
 
 const X_NO_PARAMS_TARGET_HOST: string[] = ['www.x.com', 'x.com', 'www.twitter.com', 'twitter.com'];
 
@@ -11,13 +11,5 @@ export function processXNoParamsUrl(url: string): string {
   if (parsed === null) {
     return url;
   }
-  const result: ParsedUrl = {
-    protocol: parsed.protocol,
-    host: parsed.host,
-    port: parsed.port,
-    path: parsed.path,
-    query: '',
-    fragment: parsed.fragment,
-  };
-  return buildUrl(result);
+  return rebuildUrlWithQuery(parsed, '');
 }

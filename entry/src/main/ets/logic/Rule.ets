@@ -1,10 +1,21 @@
-import { RuleConfig } from '../model/RuleConfig';
-import { RuleIds } from '../model/RuleIds';
-import { processCommonParams, processUTMParams, processUTMParamsEnhanced } from './rules/common/CommonParams';
-import { getBilibiliRedirectTargetHost, isBilibiliNoParamsTarget, processBilibiliNoParamsUrl, processBilibiliRedirectUrl } from './rules/bilibili/BilibiliRules';
-import { getXNoParamsTargetHost, processXNoParamsUrl } from './rules/x/XRules';
+import { RuleConfig } from '../data/rules/RuleConfig';
+import { processCommonParams } from './rules/common/CommonParams';
+import { processUTMParams } from './rules/common/UTMParams';
+import { processUTMParamsEnhanced } from './rules/common/UTMParamsEnhanced';
+import { getBilibiliRedirectTargetHost, processBilibiliRedirectUrl } from './rules/bilibili/BilibiliRedirects';
+import { isBilibiliNoParamsTarget, processBilibiliNoParamsUrl } from './rules/bilibili/BilibiliNoParams';
+import { getXNoParamsTargetHost, processXNoParamsUrl } from './rules/x/XNoParams';
 import { parseUrl, ParsedUrl, extractUrlList } from '../utils/LinkExtractor';
 import { PreferencesHelper } from '../utils/PreferencesHelper';
+
+export class RuleIds {
+  static readonly BILIBILI: string = 'bilibili_rules';
+  static readonly COMMON_PARAMS: string = 'common_params_rules';
+  static readonly UTM_PARAMS: string = 'utm_params_rules';
+  static readonly UTM_PARAMS_ENHANCED: string = 'utm_params_enhanced_rules';
+  static readonly X: string = 'x_rules';
+  static readonly INCOGNITO_MODE: string = 'incognito_mode';
+}
 
 export async function processUrl(urlString: string): Promise<string> {
   const ruleConfig = new RuleConfig();

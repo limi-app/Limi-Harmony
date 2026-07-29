@@ -1,4 +1,4 @@
-import { parseUrl, buildUrl, ParsedUrl } from '../../../utils/LinkExtractor';
+import { parseUrl, ParsedUrl, rebuildUrlWithQuery, filterParams } from '../../../utils/LinkExtractor';
 
 const COMMON_TARGET_PARAMS: string[] = [
   'gclid', 'dclid', 'wbraid', 'gbraid', 'gad_source', 'gad_campaignid', 'gclsrc',
@@ -16,89 +16,5 @@ export function processCommonParams(url: string): string {
     return url;
   }
   const filteredQuery = filterParams(parsed.query, COMMON_TARGET_PARAMS);
-  const result: ParsedUrl = {
-    protocol: parsed.protocol,
-    host: parsed.host,
-    port: parsed.port,
-    path: parsed.path,
-    query: filteredQuery,
-    fragment: parsed.fragment,
-  };
-  return buildUrl(result);
-}
-
-export function processUTMParams(url: string): string {
-  const parsed: ParsedUrl | null = parseUrl(url);
-  if (parsed === null) {
-    return url;
-  }
-  const utmParams: string[] = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
-  const filteredQuery = filterParams(parsed.query, utmParams);
-  const result: ParsedUrl = {
-    protocol: parsed.protocol,
-    host: parsed.host,
-    port: parsed.port,
-    path: parsed.path,
-    query: filteredQuery,
-    fragment: parsed.fragment,
-  };
-  return buildUrl(result);
-}
-
-export function processUTMParamsEnhanced(url: string): string {
-  const parsed: ParsedUrl | null = parseUrl(url);
-  if (parsed === null) {
-    return url;
-  }
-  const filteredQuery = filterParamsByPrefix(parsed.query, 'utm_');
-  const result: ParsedUrl = {
-    protocol: parsed.protocol,
-    host: parsed.host,
-    port: parsed.port,
-    path: parsed.path,
-    query: filteredQuery,
-    fragment: parsed.fragment,
-  };
-  return buildUrl(result);
-}
-
-function filterParams(query: string, targetParams: string[]): string {
-  if (query.length === 0) {
-    return '';
-  }
-  const pairs = query.split('&');
-  const kept: string[] = [];
-  for (let i = 0; i < pairs.length; i++) {
-    const pair = pairs[i];
-    const eqIdx = pair.indexOf('=');
-    const key = eqIdx >= 0 ? pair.substring(0, eqIdx) : pair;
-    let found = false;
-    for (let j = 0; j < targetParams.length; j++) {
-      if (key === targetParams[j]) {
-        found = true;
-        break;
-      }
-    }
-    if (!found) {
-      kept.push(pair);
-    }
-  }
-  return kept.join('&');
-}
-
-function filterParamsByPrefix(query: string, prefix: string): string {
-  if (query.length === 0) {
-    return '';
-  }
-  const pairs = query.split('&');
-  const kept: string[] = [];
-  for (let i = 0; i < pairs.length; i++) {
-    const pair = pairs[i];
-    const eqIdx = pair.indexOf('=');
-    const key = eqIdx >= 0 ? pair.substring(0, eqIdx) : pair;
-    if (!key.startsWith(prefix)) {
-      kept.push(pair);
-    }
-  }
-  return kept.join('&');
+  return rebuildUrlWithQuery(parsed, filteredQuery);
 }
