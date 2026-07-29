@@ -1,7 +1,7 @@
 import { RuleConfig } from '../model/RuleConfig';
 import { RuleIds } from '../model/RuleIds';
 import { processCommonParams, processUTMParams, processUTMParamsEnhanced } from './rules/common/CommonParams';
-import { getBilibiliRedirectTargetHost, getBilibiliNoParamsTargetHost, processBilibiliNoParamsUrl, processBilibiliRedirectUrl } from './rules/bilibili/BilibiliRules';
+import { getBilibiliRedirectTargetHost, isBilibiliNoParamsTarget, processBilibiliNoParamsUrl, processBilibiliRedirectUrl } from './rules/bilibili/BilibiliRules';
 import { getXNoParamsTargetHost, processXNoParamsUrl } from './rules/x/XRules';
 import { parseUrl, ParsedUrl, extractUrlList } from '../utils/LinkExtractor';
 import { PreferencesHelper } from '../utils/PreferencesHelper';
@@ -22,7 +22,7 @@ export async function processUrl(urlString: string): Promise<string> {
 
     if (ruleConfig.bilibili && isInHostList(host, getBilibiliRedirectTargetHost())) {
       finalUrl = await processBilibiliRedirectUrl(urlString);
-    } else if (ruleConfig.bilibili && isInHostList(host, getBilibiliNoParamsTargetHost())) {
+    } else if (ruleConfig.bilibili && isBilibiliNoParamsTarget(host)) {
       finalUrl = processBilibiliNoParamsUrl(urlString);
     } else if (ruleConfig.x && isInHostList(host, getXNoParamsTargetHost())) {
       finalUrl = processXNoParamsUrl(urlString);

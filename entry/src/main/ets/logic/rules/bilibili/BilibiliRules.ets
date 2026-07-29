@@ -3,19 +3,18 @@ import { getRedirectsUrl } from '../../../utils/HttpUtil';
 
 const BILIBILI_REDIRECT_TARGET_HOST: string[] = ['b23.tv'];
 
-const BILIBILI_ALLOWED_HOST: string[] = [
-  'www.bilibili.com', 'bilibili.com', 'm.bilibili.com', 'show.bilibili.com',
-  'space.bilibili.com', 'live.bilibili.com', 'bilibili.cn', 'bilibili.tv',
-  'www.bilibili.cn', 'www.bilibili.tv', 'bangumi.bilibili.com',
-  'n.bilibili.com', 'miniapp.bilibili.com',
+const BILIBILI_HOST_PATTERN = new RegExp('.+\\.bilibili\\.com');
+
+const BILIBILI_RETAINED_PARAMS: string[] = [
+  'business_id', 'business_type', 'itemsId', 'lottery_id', 'p', 'start_progress', 't',
 ];
 
 export function getBilibiliRedirectTargetHost(): string[] {
   return BILIBILI_REDIRECT_TARGET_HOST;
 }
 
-export function getBilibiliNoParamsTargetHost(): string[] {
-  return BILIBILI_ALLOWED_HOST;
+export function isBilibiliNoParamsTarget(host: string): boolean {
+  return BILIBILI_HOST_PATTERN.test(host.toLowerCase());
 }
 
 export function processBilibiliNoParamsUrl(url: string): string {
@@ -23,12 +22,32 @@ export function processBilibiliNoParamsUrl(url: string): string {
   if (parsed === null) {
     return url;
   }
+
+  const retainedPairs: string[] = [];
+  if (parsed.query.length > 0) {
+    const pairs = parsed.query.split('&');
+    for (let i = 0; i < pairs.length; i++) {
+      const eqIdx = pairs[i].indexOf('=');
+      const key = eqIdx >= 0 ? pairs[i].substring(0, eqIdx) : pairs[i];
+      if (BILIBILI_RETAINED_PARAMS.indexOf(key) < 0) {
+        continue;
+      }
+      if (key === 'p') {
+        const value = eqIdx >= 0 ? pairs[i].substring(eqIdx + 1) : '';
+        if (value === '1') {
+          continue;
+        }
+      }
+      retainedPairs.push(pairs[i]);
+    }
+  }
+
   const result: ParsedUrl = {
     protocol: parsed.protocol,
     host: parsed.host,
     port: parsed.port,
     path: parsed.path,
-    query: '',
+    query: retainedPairs.join('&'),
     fragment: parsed.fragment,
   };
   return buildUrl(result);
@@ -57,16 +76,8 @@ export async function processBilibiliRedirectUrl(url: string): Promise<string> {
   if (redirectParsed === null) {
     return url;
   }
-  const redirectHost = redirectParsed.host.toLowerCase();
 
-  let isAllowed = false;
-  for (let i = 0; i < BILIBILI_ALLOWED_HOST.length; i++) {
-    if (redirectHost === BILIBILI_ALLOWED_HOST[i].toLowerCase()) {
-      isAllowed = true;
-      break;
-    }
-  }
-  if (!isAllowed) {
+  if (!isBilibiliNoParamsTarget(redirectParsed.host)) {
     return url;
   }
 
