@@ -14,6 +14,17 @@ const CREATE_TABLE_SQL: string =
 
 export class HistoryDB {
   private static rdbStore: relationalStore.RdbStore | null = null;
+  private static dataChangedCallback: (() => void) | null = null;
+
+  static setDataChangedCallback(callback: (() => void) | null): void {
+    HistoryDB.dataChangedCallback = callback;
+  }
+
+  private static notifyDataChanged(): void {
+    if (HistoryDB.dataChangedCallback !== null) {
+      HistoryDB.dataChangedCallback();
+    }
+  }
 
   static async init(context: common.Context): Promise<void> {
     const config: relationalStore.StoreConfig = {
@@ -33,7 +44,9 @@ export class HistoryDB {
       'processedUrl': item.processedUrl,
       'datetime': item.datetime,
     };
-    return await HistoryDB.rdbStore.insert(TABLE_NAME, valueBucket);
+    const result = await HistoryDB.rdbStore.insert(TABLE_NAME, valueBucket);
+    HistoryDB.notifyDataChanged();
+    return result;
   }
 
   static async getAllSortedByDatetimeDesc(): Promise<LimiHistory[]> {
@@ -64,6 +77,8 @@ export class HistoryDB {
     }
     const predicates = new relationalStore.RdbPredicates(TABLE_NAME);
     predicates.equalTo('id', id);
-    return await HistoryDB.rdbStore.delete(predicates);
+    const result = await HistoryDB.rdbStore.delete(predicates);
+    HistoryDB.notifyDataChanged();
+    return result;
   }
 }

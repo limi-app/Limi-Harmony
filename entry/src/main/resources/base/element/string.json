@@ -2,7 +2,7 @@
   "string": [
     {
       "name": "module_desc",
-      "value": "Limi - URL cleaning tool"
+      "value": "Limi"
     },
     {
       "name": "EntryAbility_desc",
@@ -62,7 +62,7 @@
     },
     {
       "name": "processing_error",
-      "value": "处理出错：%{public}s"
+      "value": "处理出错：%s"
     },
     {
       "name": "home",
@@ -238,7 +238,7 @@
     },
     {
       "name": "version_label",
-      "value": "版本：%{public}s"
+      "value": "版本：%s"
     }
   ]
 }

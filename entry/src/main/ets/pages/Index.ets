@@ -71,6 +71,7 @@ struct Index {
     const context = getContext(this) as common.UIAbilityContext;
     await PreferencesHelper.init(context);
     await HistoryDB.init(context);
+    HistoryDB.setDataChangedCallback(() => { this.loadHistory(); });
     await this.loadHistory();
     this.customMaterialLevel = getMaterialLevel();
   }
@@ -176,7 +177,7 @@ struct Index {
               }, (item: LimiHistory) => item.id.toString())
             }
           }
-        }, (group: HistoryGroup) => group.date)
+        }, (group: HistoryGroup) => `${group.date}_${group.items.length}`)
       }.width('100%').height('100%').clip(false).edgeEffect(EdgeEffect.Spring)
     }
   }
