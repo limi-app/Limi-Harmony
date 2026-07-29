@@ -19,7 +19,7 @@ export async function saveHistoryIfEnabled(originalText: string, processedText: 
   if (originalText.length === 0 || processedText.length === 0) {
     return false;
   }
-  const incognito = await PreferencesHelper.getBoolean(RuleIds.INCOGNITO_MODE, false);
+  const incognito = PreferencesHelper.getBoolean(RuleIds.INCOGNITO_MODE, false);
   if (incognito) {
     return false;
   }

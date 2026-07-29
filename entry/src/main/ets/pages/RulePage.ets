@@ -11,11 +11,11 @@ export struct RulePage {
   @Local xEnabled: boolean = true;
 
   async aboutToAppear(): Promise<void> {
-    this.commonParamsEnabled = PreferencesHelper.getBooleanSync(RuleIds.COMMON_PARAMS, true);
-    this.utmParamsEnabled = PreferencesHelper.getBooleanSync(RuleIds.UTM_PARAMS, true);
-    this.utmParamsEnhancedEnabled = PreferencesHelper.getBooleanSync(RuleIds.UTM_PARAMS_ENHANCED, false);
-    this.bilibiliEnabled = PreferencesHelper.getBooleanSync(RuleIds.BILIBILI, true);
-    this.xEnabled = PreferencesHelper.getBooleanSync(RuleIds.X, true);
+    this.commonParamsEnabled = PreferencesHelper.getBoolean(RuleIds.COMMON_PARAMS, true);
+    this.utmParamsEnabled = PreferencesHelper.getBoolean(RuleIds.UTM_PARAMS, true);
+    this.utmParamsEnhancedEnabled = PreferencesHelper.getBoolean(RuleIds.UTM_PARAMS_ENHANCED, false);
+    this.bilibiliEnabled = PreferencesHelper.getBoolean(RuleIds.BILIBILI, true);
+    this.xEnabled = PreferencesHelper.getBoolean(RuleIds.X, true);
   }
 
   build() {

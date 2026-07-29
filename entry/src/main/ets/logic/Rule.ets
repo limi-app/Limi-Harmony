@@ -19,11 +19,11 @@ export class RuleIds {
 
 export async function processUrl(urlString: string): Promise<string> {
   const ruleConfig = new RuleConfig();
-  ruleConfig.commonParams = await PreferencesHelper.getBoolean(RuleIds.COMMON_PARAMS, true);
-  ruleConfig.UTMParams = await PreferencesHelper.getBoolean(RuleIds.UTM_PARAMS, true);
-  ruleConfig.UTMParamsEnhanced = await PreferencesHelper.getBoolean(RuleIds.UTM_PARAMS_ENHANCED, false);
-  ruleConfig.bilibili = await PreferencesHelper.getBoolean(RuleIds.BILIBILI, true);
-  ruleConfig.x = await PreferencesHelper.getBoolean(RuleIds.X, true);
+  ruleConfig.commonParams = PreferencesHelper.getBoolean(RuleIds.COMMON_PARAMS, true);
+  ruleConfig.UTMParams = PreferencesHelper.getBoolean(RuleIds.UTM_PARAMS, true);
+  ruleConfig.UTMParamsEnhanced = PreferencesHelper.getBoolean(RuleIds.UTM_PARAMS_ENHANCED, false);
+  ruleConfig.bilibili = PreferencesHelper.getBoolean(RuleIds.BILIBILI, true);
+  ruleConfig.x = PreferencesHelper.getBoolean(RuleIds.X, true);
 
   let finalUrl = urlString;
 

@@ -6,7 +6,8 @@ export function formatDate(dateStr: string): string {
     const locale = i18n.System.getSystemLocale();
     return new intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(date);
   } catch (e) {
-    return dateStr.substring(0, dateStr.indexOf('T'));
+    const tIdx = dateStr.indexOf('T');
+    return tIdx > 0 ? dateStr.substring(0, tIdx) : dateStr;
   }
 }
 
@@ -16,7 +17,12 @@ export function formatTime(dateStr: string): string {
     const locale = i18n.System.getSystemLocale();
     return new intl.DateTimeFormat(locale, { timeStyle: 'medium' }).format(date);
   } catch (e) {
-    return dateStr.substring(dateStr.indexOf('T') + 1, dateStr.lastIndexOf('.'));
+    const tIdx = dateStr.indexOf('T');
+    const dIdx = dateStr.lastIndexOf('.');
+    if (tIdx < 0 || dIdx < 0 || dIdx <= tIdx) {
+      return dateStr;
+    }
+    return dateStr.substring(tIdx + 1, dIdx);
   }
 }
 

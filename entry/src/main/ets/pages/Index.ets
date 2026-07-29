@@ -70,7 +70,7 @@ struct Index {
 
   async aboutToAppear(): Promise<void> {
     const context = getContext(this) as common.UIAbilityContext;
-    await PreferencesHelper.init(context);
+    PreferencesHelper.init(context);
     await HistoryDB.init(context);
     HistoryDB.setDataChangedCallback(() => { this.loadHistory(); });
     await this.loadHistory();

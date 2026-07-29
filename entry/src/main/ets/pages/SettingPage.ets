@@ -9,7 +9,7 @@ export struct SettingPage {
   @Local appVersion: string = '';
 
   async aboutToAppear(): Promise<void> {
-    this.incognitoModeEnabled = PreferencesHelper.getBooleanSync(RuleIds.INCOGNITO_MODE, false);
+    this.incognitoModeEnabled = PreferencesHelper.getBoolean(RuleIds.INCOGNITO_MODE, false);
     const bundleInfo = await bundleManager.getBundleInfoForSelf(bundleManager.BundleFlag.GET_BUNDLE_INFO_DEFAULT);
     this.appVersion = `v${bundleInfo.versionName} (${bundleInfo.versionCode})`;
   }
