@@ -31,14 +31,37 @@ export struct ProcessPanel {
   @Event onShare: (text: string) => void = () => {
   };
 
+  @Local containerWidth: number = 360;
+  @Local useAnimation: boolean = false;
+
+  aboutToAppear(): void {
+    setTimeout(() => { this.useAnimation = true; }, 50);
+  }
+
   build() {
-    Column() {
+    Stack({ alignContent: Alignment.Start }) {
       if (this.isEditing) {
-        this.EditView()
-      } else {
-        this.ProcessView()
+        Column() {
+          this.EditView()
+        }
+        .width('100%')
+        .transition(TransitionEffect.translate({ x: -(this.containerWidth + 32) })
+          .animation({ duration: this.useAnimation ? 300 : 0, curve: Curve.FastOutSlowIn }))
       }
-    }.width('100%')
+      if (!this.isEditing) {
+        Column() {
+          this.ProcessView()
+        }
+        .width('100%')
+        .transition(TransitionEffect.translate({ x: this.containerWidth + 32 })
+          .animation({ duration: this.useAnimation ? 300 : 0, curve: Curve.FastOutSlowIn }))
+      }
+    }
+    .width('100%')
+    .clip(false)
+    .onAreaChange((_old: Area, newArea: Area) => {
+      this.containerWidth = Number(newArea.width);
+    })
   }
 
   @Builder

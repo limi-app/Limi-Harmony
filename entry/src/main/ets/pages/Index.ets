@@ -4,6 +4,7 @@ import {
   HdsNavigationTitleMode,
   HdsTabs,
   HdsTabsController,
+  IconStyleMode,
 } from '@kit.UIDesignKit';
 import { SymbolGlyphModifier } from '@kit.ArkUI';
 import { RulePage } from './RulePage';
