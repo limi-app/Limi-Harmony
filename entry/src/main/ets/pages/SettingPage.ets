@@ -3,10 +3,10 @@ import { PreferencesHelper } from '../utils/PreferencesHelper';
 import { NavigationItem, PreferenceGroup, SwitchItem } from '../components/PreferenceGroup';
 import { bundleManager } from '@kit.AbilityKit';
 
-@Component
+@ComponentV2
 export struct SettingPage {
-  @State incognitoModeEnabled: boolean = false;
-  @State appVersion: string = '';
+  @Local incognitoModeEnabled: boolean = false;
+  @Local appVersion: string = '';
 
   async aboutToAppear(): Promise<void> {
     this.incognitoModeEnabled = PreferencesHelper.getBooleanSync(RuleIds.INCOGNITO_MODE, false);

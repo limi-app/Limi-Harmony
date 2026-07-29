@@ -50,21 +50,21 @@ class HistoryGroup {
 }
 
 @Entry
-@Component
+@ComponentV2
 struct Index {
-  @State currentPage: number = 0;
-  @State historyList: LimiHistory[] = [];
-  @State showInputSheet: boolean = false;
-  @State originalText: string = '';
-  @State processedText: string = '';
-  @State processedUrlList: string[] = [];
-  @State isProcessing: boolean = false;
-  @State isEmpty: boolean = false;
-  @State isNotHasUrls: boolean = false;
-  @State isError: boolean = false;
-  @State isEditing: boolean = true;
-  @State editText: string = '';
-  @State customMaterialLevel: hdsMaterial.MaterialLevel = hdsMaterial.MaterialLevel.EXQUISITE;
+  @Local currentPage: number = 0;
+  @Local historyList: LimiHistory[] = [];
+  @Local showInputSheet: boolean = false;
+  @Local originalText: string = '';
+  @Local processedText: string = '';
+  @Local processedUrlList: string[] = [];
+  @Local isProcessing: boolean = false;
+  @Local isEmpty: boolean = false;
+  @Local isNotHasUrls: boolean = false;
+  @Local isError: boolean = false;
+  @Local isEditing: boolean = true;
+  @Local editText: string = '';
+  @Local customMaterialLevel: hdsMaterial.MaterialLevel = hdsMaterial.MaterialLevel.EXQUISITE;
   private tabController: HdsTabsController = new HdsTabsController();
 
   async aboutToAppear(): Promise<void> {
@@ -204,8 +204,11 @@ struct Index {
     Column() {
       ProcessPanel({
         isEditing: this.isEditing,
+        onIsEditingChange: (v: boolean) => { this.isEditing = v; },
         editText: this.editText,
+        onEditTextChange: (v: string) => { this.editText = v; },
         originalText: this.originalText,
+        onOriginalTextChange: (v: string) => { this.originalText = v; },
         processedText: this.processedText,
         processedUrlList: this.processedUrlList,
         isProcessing: this.isProcessing,

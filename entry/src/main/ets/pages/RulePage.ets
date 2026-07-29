@@ -2,13 +2,13 @@ import { RuleIds } from '../logic/Rule';
 import { PreferencesHelper } from '../utils/PreferencesHelper';
 import { PreferenceGroup, SwitchItem } from '../components/PreferenceGroup';
 
-@Component
+@ComponentV2
 export struct RulePage {
-  @State commonParamsEnabled: boolean = true;
-  @State utmParamsEnabled: boolean = true;
-  @State utmParamsEnhancedEnabled: boolean = false;
-  @State bilibiliEnabled: boolean = true;
-  @State xEnabled: boolean = true;
+  @Local commonParamsEnabled: boolean = true;
+  @Local utmParamsEnabled: boolean = true;
+  @Local utmParamsEnhancedEnabled: boolean = false;
+  @Local bilibiliEnabled: boolean = true;
+  @Local xEnabled: boolean = true;
 
   async aboutToAppear(): Promise<void> {
     this.commonParamsEnabled = PreferencesHelper.getBooleanSync(RuleIds.COMMON_PARAMS, true);

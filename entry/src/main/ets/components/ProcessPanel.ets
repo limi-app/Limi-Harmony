@@ -1,23 +1,34 @@
 import { ActionButton } from './ActionButton';
 
-@Component
+@ComponentV2
 export struct ProcessPanel {
-  @Link isEditing: boolean;
-  @Link editText: string;
-  @Link originalText: string;
-  @Link processedText: string;
-  @Link processedUrlList: string[];
-  @Link isProcessing: boolean;
-  @Link isEmpty: boolean;
-  @Link isNotHasUrls: boolean;
-  @Link isError: boolean;
-  @Prop urlIcon: Resource = $r('sys.symbol.link');
-  @Prop showShareButton: boolean = false;
-  onConfirm: (text: string) => void = () => {
+  @Param isEditing: boolean = false;
+  @Event onIsEditingChange: (value: boolean) => void = () => {
   };
-  onCopy: (text: string) => void = () => {
+
+  @Param editText: string = '';
+  @Event onEditTextChange: (value: string) => void = () => {
   };
-  onShare: (text: string) => void = () => {
+
+  @Param originalText: string = '';
+  @Event onOriginalTextChange: (value: string) => void = () => {
+  };
+
+  @Param processedText: string = '';
+  @Param processedUrlList: string[] = [];
+  @Param isProcessing: boolean = false;
+  @Param isEmpty: boolean = false;
+  @Param isNotHasUrls: boolean = false;
+  @Param isError: boolean = false;
+
+  @Param urlIcon: Resource = $r('sys.symbol.link');
+  @Param showShareButton: boolean = false;
+
+  @Event onConfirm: (text: string) => void = () => {
+  };
+  @Event onCopy: (text: string) => void = () => {
+  };
+  @Event onShare: (text: string) => void = () => {
   };
 
   build() {
@@ -38,7 +49,7 @@ export struct ProcessPanel {
         .height(120)
         .fontSize(14)
         .onChange((value: string) => {
-          this.editText = value;
+          this.onEditTextChange(value);
         })
         .margin({ bottom: 12 })
 
@@ -49,8 +60,8 @@ export struct ProcessPanel {
           styleMode: ButtonStyleMode.NORMAL,
           isEnabled: this.originalText.length > 0,
           onButtonClick: () => {
-            this.isEditing = false;
-            this.editText = this.originalText;
+            this.onIsEditingChange(false);
+            this.onEditTextChange(this.originalText);
           },
         })
 
@@ -61,8 +72,8 @@ export struct ProcessPanel {
           isEnabled: this.editText.trim().length > 0 &&
             (this.editText !== this.originalText || this.originalText.length === 0),
           onButtonClick: () => {
-            this.originalText = this.editText;
-            this.isEditing = false;
+            this.onOriginalTextChange(this.editText);
+            this.onIsEditingChange(false);
             this.onConfirm(this.editText);
           },
         })
@@ -86,8 +97,8 @@ export struct ProcessPanel {
       .borderRadius(20)
       .margin({ bottom: 12 })
       .onClick(() => {
-        this.isEditing = true;
-        this.editText = this.originalText;
+        this.onIsEditingChange(true);
+        this.onEditTextChange(this.originalText);
       })
 
       this.ResultCard()

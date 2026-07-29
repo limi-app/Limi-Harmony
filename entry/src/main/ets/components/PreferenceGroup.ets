@@ -1,9 +1,9 @@
 import { HdsListItemCard, SuffixArrow, SuffixSwitch } from '@kit.UIDesignKit';
 import { TextModifier } from '@kit.ArkUI';
 
-@Component
+@ComponentV2
 export struct PreferenceGroup {
-  @Prop title: string | Resource = '';
+  @Param title: string | Resource = '';
   @BuilderParam content: () => void = this.defaultContent;
 
   @Builder
@@ -31,13 +31,13 @@ export struct PreferenceGroup {
   }
 }
 
-@Component
+@ComponentV2
 export struct SwitchItem {
-  @Prop title: string | Resource = '';
-  @Prop summary: string | Resource = '';
-  @Prop maxLines: number = 0;
-  @Prop checked: boolean = false;
-  onChange: (value: boolean) => void = () => {
+  @Param title: string | Resource = '';
+  @Param summary: string | Resource = '';
+  @Param maxLines: number = 0;
+  @Param checked: boolean = false;
+  @Event onChange: (value: boolean) => void = () => {
   };
 
   build() {
@@ -57,7 +57,6 @@ export struct SwitchItem {
           }
         }, suffixItem: new SuffixSwitch({
           isCheck: this.checked, onChange: (isCheck: boolean) => {
-            this.checked = isCheck;
             this.onChange(isCheck);
           }
         }),
@@ -67,13 +66,13 @@ export struct SwitchItem {
   }
 }
 
-@Component
+@ComponentV2
 export struct NavigationItem {
-  @Prop title: string | Resource = '';
-  @Prop summary: string | Resource = '';
-  @Prop maxLines: number = 0;
-  @Prop showArrow: boolean = true;
-  onNavClick: () => void = () => {
+  @Param title: string | Resource = '';
+  @Param summary: string | Resource = '';
+  @Param maxLines: number = 0;
+  @Param showArrow: boolean = true;
+  @Event onNavClick: () => void = () => {
   };
 
   build() {

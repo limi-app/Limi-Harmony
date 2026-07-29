@@ -7,18 +7,18 @@ import { copyToClipboard } from '../utils/ClipboardUtil';
 import { saveHistoryIfEnabled } from '../utils/HistoryUtil';
 
 @Entry
-@Component
+@ComponentV2
 struct SharePanelPage {
-  @State originalText: string = '';
-  @State processedText: string = '';
-  @State processedUrlList: string[] = [];
-  @State isProcessing: boolean = false;
-  @State isEditing: boolean = true;
-  @State editText: string = '';
-  @State isEmpty: boolean = false;
-  @State isNotHasUrls: boolean = false;
-  @State isError: boolean = false;
-  @State customMaterialLevel: hdsMaterial.MaterialLevel = hdsMaterial.MaterialLevel.EXQUISITE;
+  @Local originalText: string = '';
+  @Local processedText: string = '';
+  @Local processedUrlList: string[] = [];
+  @Local isProcessing: boolean = false;
+  @Local isEditing: boolean = true;
+  @Local editText: string = '';
+  @Local isEmpty: boolean = false;
+  @Local isNotHasUrls: boolean = false;
+  @Local isError: boolean = false;
+  @Local customMaterialLevel: hdsMaterial.MaterialLevel = hdsMaterial.MaterialLevel.EXQUISITE;
   private storage: LocalStorage = LocalStorage.getShared();
   private session: UIExtensionContentSession | null = null;
 
@@ -72,8 +72,11 @@ struct SharePanelPage {
       Column() {
         ProcessPanel({
           isEditing: this.isEditing,
+          onIsEditingChange: (v: boolean) => { this.isEditing = v; },
           editText: this.editText,
+          onEditTextChange: (v: string) => { this.editText = v; },
           originalText: this.originalText,
+          onOriginalTextChange: (v: string) => { this.originalText = v; },
           processedText: this.processedText,
           processedUrlList: this.processedUrlList,
           isProcessing: this.isProcessing,

@@ -1,10 +1,10 @@
-@Component
+@ComponentV2
 export struct ActionButton {
-  @Prop icon: Resource = $r('sys.symbol.checkmark');
-  @Prop label: string | Resource = '';
-  @Prop isEnabled: boolean = true;
-  @Prop styleMode: ButtonStyleMode = ButtonStyleMode.NORMAL;
-  onButtonClick: () => void = () => {
+  @Param icon: Resource = $r('sys.symbol.checkmark');
+  @Param label: string | Resource = '';
+  @Param isEnabled: boolean = true;
+  @Param styleMode: ButtonStyleMode = ButtonStyleMode.NORMAL;
+  @Event onButtonClick: () => void = () => {
   };
 
   build() {

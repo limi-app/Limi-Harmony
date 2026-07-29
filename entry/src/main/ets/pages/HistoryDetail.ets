@@ -11,12 +11,12 @@ import {
 } from '@kit.UIDesignKit';
 
 @Entry
-@Component
+@ComponentV2
 struct HistoryDetail {
-  @State originUrl: string = '';
-  @State processedUrl: string = '';
-  @State datetime: string = '';
-  @State customMaterialLevel: hdsMaterial.MaterialLevel = hdsMaterial.MaterialLevel.EXQUISITE;
+  @Local originUrl: string = '';
+  @Local processedUrl: string = '';
+  @Local datetime: string = '';
+  @Local customMaterialLevel: hdsMaterial.MaterialLevel = hdsMaterial.MaterialLevel.EXQUISITE;
   private historyId: number = -1;
 
   aboutToAppear(): void {
