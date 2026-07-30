@@ -5,7 +5,7 @@ import { processUTMParamsEnhanced } from './rules/common/UTMParamsEnhanced';
 import { getBilibiliRedirectTargetHost, processBilibiliRedirectUrl } from './rules/bilibili/BilibiliRedirects';
 import { isBilibiliNoParamsTarget, processBilibiliNoParamsUrl } from './rules/bilibili/BilibiliNoParams';
 import { getXNoParamsTargetHost, processXNoParamsUrl } from './rules/x/XNoParams';
-import { parseUrl, ParsedUrl, extractUrlList } from '../utils/LinkExtractor';
+import { extractUrlList, ParsedUrl, parseUrl } from '../utils/LinkExtractor';
 import { PreferencesHelper } from '../utils/PreferencesHelper';
 
 export class RuleIds {
@@ -74,12 +74,22 @@ export interface ProcessLinksResult {
 
 export async function processLinksInText(text: string): Promise<ProcessLinksResult> {
   if (text.length === 0) {
-    return { processedText: '', processedUrlList: [], isEmpty: true, isNotHasUrls: false };
+    return {
+      processedText: '',
+      processedUrlList: [],
+      isEmpty: true,
+      isNotHasUrls: false
+    };
   }
 
   const urls = extractUrlList(text, true, false);
   if (urls.length === 0) {
-    return { processedText: text, processedUrlList: [], isEmpty: false, isNotHasUrls: true };
+    return {
+      processedText: text,
+      processedUrlList: [],
+      isEmpty: false,
+      isNotHasUrls: true
+    };
   }
 
   const processedUrlList: string[] = [];
@@ -89,5 +99,10 @@ export async function processLinksInText(text: string): Promise<ProcessLinksResu
     processedUrlList.push(processed);
     resultText = resultText.replaceAll(urls[i], processed);
   }
-  return { processedText: resultText, processedUrlList: processedUrlList, isEmpty: false, isNotHasUrls: false };
+  return {
+    processedText: resultText,
+    processedUrlList: processedUrlList,
+    isEmpty: false,
+    isNotHasUrls: false
+  };
 }

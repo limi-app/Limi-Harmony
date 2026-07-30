@@ -9,10 +9,10 @@ const TABLE_NAME: string = 'limi_history';
 
 const CREATE_TABLE_SQL: string =
   `CREATE TABLE IF NOT EXISTS ${TABLE_NAME} (` +
-  'id INTEGER PRIMARY KEY AUTOINCREMENT, ' +
-  'originUrl TEXT NOT NULL, ' +
-  'processedUrl TEXT NOT NULL, ' +
-  'datetime TEXT NOT NULL)';
+    'id INTEGER PRIMARY KEY AUTOINCREMENT, ' +
+    'originUrl TEXT NOT NULL, ' +
+    'processedUrl TEXT NOT NULL, ' +
+    'datetime TEXT NOT NULL)';
 
 export class HistoryDB {
   private static rdbStore: relationalStore.RdbStore | null = null;

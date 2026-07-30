@@ -101,18 +101,22 @@ struct HistoryDetail {
 
   showDeleteConfirmDialog(): void {
     try {
-      this.getUIContext().getPromptAction().showDialog({
-        title: $r('app.string.confirm_delete_title'),
-        message: $r('app.string.confirm_delete_message'),
-        buttons: [{ text: $r('app.string.cancel'), color: $r('sys.color.brand') },
-          { text: $r('app.string.confirm'), color: $r('sys.color.ohos_id_color_warning') }]
-      }).then((result) => {
-        if (result.index === 1) {
-          this.deleteHistory();
-        }
-      }).catch((err: BusinessError) => {
-        console.info(`showDialog failed: ${err.code} ${err.message}`);
-      });
+      this.getUIContext()
+        .getPromptAction()
+        .showDialog({
+          title: $r('app.string.confirm_delete_title'),
+          message: $r('app.string.confirm_delete_message'),
+          buttons: [{ text: $r('app.string.cancel'), color: $r('sys.color.brand') },
+            { text: $r('app.string.confirm'), color: $r('sys.color.ohos_id_color_warning') }]
+        })
+        .then((result) => {
+          if (result.index === 1) {
+            this.deleteHistory();
+          }
+        })
+        .catch((err: BusinessError) => {
+          console.info(`showDialog failed: ${err.code} ${err.message}`);
+        });
     } catch (e) {
       console.info(`showDialog failed: ${e}`);
     }

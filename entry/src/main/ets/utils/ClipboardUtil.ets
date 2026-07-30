@@ -1,4 +1,4 @@
-import { pasteboard, BusinessError } from '@kit.BasicServicesKit';
+import { BusinessError, pasteboard } from '@kit.BasicServicesKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 
 export function copyToClipboard(uiContext: UIContext, text: string): void {

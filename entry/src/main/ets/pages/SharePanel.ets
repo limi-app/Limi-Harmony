@@ -73,11 +73,17 @@ struct SharePanelPage {
       Column() {
         ProcessPanel({
           isEditing: this.isEditing,
-          onIsEditingChange: (v: boolean) => { this.isEditing = v; },
+          onIsEditingChange: (v: boolean) => {
+            this.isEditing = v;
+          },
           editText: this.editText,
-          onEditTextChange: (v: string) => { this.editText = v; },
+          onEditTextChange: (v: string) => {
+            this.editText = v;
+          },
           originalText: this.originalText,
-          onOriginalTextChange: (v: string) => { this.originalText = v; },
+          onOriginalTextChange: (v: string) => {
+            this.originalText = v;
+          },
           processedText: this.processedText,
           processedUrlList: this.processedUrlList,
           isProcessing: this.isProcessing,

@@ -3,7 +3,7 @@ import { systemShare } from '@kit.ShareKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { PreferencesHelper } from '../utils/PreferencesHelper';
 import { HistoryDB } from '../utils/HistoryDB';
-import { scanCore, scanBarcode, detectBarcode } from '@kit.ScanKit';
+import { detectBarcode, scanBarcode, scanCore } from '@kit.ScanKit';
 import { uniformTypeDescriptor as utd } from '@kit.ArkData';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 

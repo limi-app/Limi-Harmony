@@ -1,7 +1,6 @@
 {
-  "layered-image":
-  {
-    "background" : "$media:background",
-    "foreground" : "$media:limi"
+  "layered-image": {
+    "background": "$media:background",
+    "foreground": "$media:limi"
   }
 }

@@ -1,4 +1,4 @@
-import { parseUrl, ParsedUrl, rebuildUrlWithQuery } from '../../../utils/LinkExtractor';
+import { ParsedUrl, parseUrl, rebuildUrlWithQuery } from '../../../utils/LinkExtractor';
 
 const X_NO_PARAMS_TARGET_HOST: string[] = ['www.x.com', 'x.com', 'www.twitter.com', 'twitter.com'];
 

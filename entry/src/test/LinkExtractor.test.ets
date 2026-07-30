@@ -1,4 +1,4 @@
-import { describe, beforeAll, beforeEach, afterEach, afterAll, it, expect } from '@ohos/hypium';
+import { describe, expect, it } from '@ohos/hypium';
 import { extractUrlList } from '../main/ets/utils/LinkExtractor';
 
 export default function linkExtractorTest() {

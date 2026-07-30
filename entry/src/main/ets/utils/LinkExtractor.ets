@@ -1,4 +1,5 @@
-export function extractUrlList(text: string, validateUrls: boolean = true, truncateNonAscii: boolean = false): string[] {
+export function extractUrlList(text: string, validateUrls: boolean = true,
+  truncateNonAscii: boolean = false): string[] {
   let preProcessedText = text;
   if (truncateNonAscii) {
     let result = '';
@@ -25,7 +26,8 @@ export function extractUrlList(text: string, validateUrls: boolean = true, trunc
   }
   preProcessedText = cleaned;
 
-  const URL_PATTERN = '(https?://)?(www\\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z][a-zA-Z0-9()]{0,5}\\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)';
+  const URL_PATTERN =
+    '(https?://)?(www\\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z][a-zA-Z0-9()]{0,5}\\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)';
   const regex = new RegExp(URL_PATTERN, 'g');
   const matches = preProcessedText.match(regex);
 
@@ -145,9 +147,15 @@ function parseUrl(url: string): ParsedUrl | null {
     const queryIdx = rest.indexOf('?');
     const fragmentIdx = rest.indexOf('#');
     let hostEnd = rest.length;
-    if (slashIdx >= 0 && slashIdx < hostEnd) hostEnd = slashIdx;
-    if (queryIdx >= 0 && queryIdx < hostEnd) hostEnd = queryIdx;
-    if (fragmentIdx >= 0 && fragmentIdx < hostEnd) hostEnd = fragmentIdx;
+    if (slashIdx >= 0 && slashIdx < hostEnd) {
+      hostEnd = slashIdx;
+    }
+    if (queryIdx >= 0 && queryIdx < hostEnd) {
+      hostEnd = queryIdx;
+    }
+    if (fragmentIdx >= 0 && fragmentIdx < hostEnd) {
+      hostEnd = fragmentIdx;
+    }
     host = rest.substring(0, hostEnd);
     const colonIdx = host.indexOf(':');
     if (colonIdx >= 0) {
