@@ -79,7 +79,7 @@ export default class ShareAbility extends ShareExtensionAbility {
     AppStorage.setOrCreate('shareText', shareText);
     AppStorage.setOrCreate('session', session);
     try {
-      session.loadContent('pages/SharePanel', new LocalStorage());
+      session.loadContent('pages/SharePanel');
     } catch (e) {
       const err = e as BusinessError;
       hilog.error(0x0000, 'ShareAbility', `loadContent failed: ${err.code} ${err.message}`);
