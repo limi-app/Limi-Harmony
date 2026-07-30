@@ -3,11 +3,11 @@ import {
   HdsNavigation,
   HdsNavigationTitleMode,
   HdsTabs,
-  HdsTabsController,
-  IconStyleMode,
+  HdsTabsController
 } from '@kit.UIDesignKit';
 import { SymbolGlyphModifier } from '@kit.ArkUI';
 import { RulePage } from './RulePage';
+import { spacingText } from 'pangu_cjk';
 import { SettingPage } from './SettingPage';
 import { HistoryDB } from '../utils/HistoryDB';
 import { PreferencesHelper } from '../utils/PreferencesHelper';
@@ -72,7 +72,9 @@ struct Index {
     const context = getContext(this) as common.UIAbilityContext;
     PreferencesHelper.init(context);
     await HistoryDB.init(context);
-    HistoryDB.setDataChangedCallback(() => { this.loadHistory(); });
+    HistoryDB.setDataChangedCallback(() => {
+      this.loadHistory();
+    });
     await this.loadHistory();
     this.customMaterialLevel = getMaterialLevel();
   }
@@ -123,10 +125,8 @@ struct Index {
       .clip(false)
     }
     .titleMode(HdsNavigationTitleMode.MINI)
-    .titleBar(buildTitleBarOpts(
-      this.currentPage === 0 ? 'Limi' : MENU_CONFIG[this.currentPage].label,
-      this.customMaterialLevel,
-    ))
+    .titleBar(buildTitleBarOpts(this.currentPage === 0 ? 'Limi' : MENU_CONFIG[this.currentPage].label,
+      this.customMaterialLevel,))
     .hideBackButton(true)
     .width('100%')
     .height('100%')
@@ -159,7 +159,7 @@ struct Index {
       List({ space: 0 }) {
         ForEach(this.getGroupedHistory(), (group: HistoryGroup) => {
           ListItem() {
-            PreferenceGroup({ title: group.date }) {
+            PreferenceGroup({ title: spacingText(group.date) }) {
               ForEach(group.items, (item: LimiHistory) => {
                 NavigationItem({
                   maxLines: 3,
@@ -205,11 +205,17 @@ struct Index {
     Column() {
       ProcessPanel({
         isEditing: this.isEditing,
-        onIsEditingChange: (v: boolean) => { this.isEditing = v; },
+        onIsEditingChange: (v: boolean) => {
+          this.isEditing = v;
+        },
         editText: this.editText,
-        onEditTextChange: (v: string) => { this.editText = v; },
+        onEditTextChange: (v: string) => {
+          this.editText = v;
+        },
         originalText: this.originalText,
-        onOriginalTextChange: (v: string) => { this.originalText = v; },
+        onOriginalTextChange: (v: string) => {
+          this.originalText = v;
+        },
         processedText: this.processedText,
         processedUrlList: this.processedUrlList,
         isProcessing: this.isProcessing,
