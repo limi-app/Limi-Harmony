@@ -1,5 +1,7 @@
 import { relationalStore } from '@kit.ArkData';
 import { common } from '@kit.AbilityKit';
+import { BusinessError } from '@kit.BasicServicesKit';
+import { hilog } from '@kit.PerformanceAnalysisKit';
 import { LimiHistory } from '../data/model/LimiHistory';
 
 const DB_NAME: string = 'limi_room.db';
@@ -35,6 +37,10 @@ export class HistoryDB {
       HistoryDB.rdbStore = await relationalStore.getRdbStore(context, config);
       await HistoryDB.rdbStore.executeSql(CREATE_TABLE_SQL);
     } catch (e) {
+      HistoryDB.rdbStore = null;
+      const err = e as BusinessError;
+      hilog.error(0x0000, 'HistoryDB', `init failed: ${err.code} ${err.message}`);
+      throw new Error(`HistoryDB init failed: ${err.code} ${err.message}`);
     }
   }
 
@@ -52,6 +58,8 @@ export class HistoryDB {
       HistoryDB.notifyDataChanged();
       return result;
     } catch (e) {
+      const err = e as BusinessError;
+      hilog.error(0x0000, 'HistoryDB', `insert failed: ${err.code} ${err.message}`);
       return -1;
     }
   }
@@ -78,6 +86,8 @@ export class HistoryDB {
       }
       return list;
     } catch (e) {
+      const err = e as BusinessError;
+      hilog.error(0x0000, 'HistoryDB', `getAllSortedByDatetimeDesc failed: ${err.code} ${err.message}`);
       return [];
     }
   }
@@ -93,6 +103,8 @@ export class HistoryDB {
       HistoryDB.notifyDataChanged();
       return result;
     } catch (e) {
+      const err = e as BusinessError;
+      hilog.error(0x0000, 'HistoryDB', `deleteById failed: ${err.code} ${err.message}`);
       return 0;
     }
   }

@@ -10,7 +10,9 @@ import { hilog } from '@kit.PerformanceAnalysisKit';
 export default class ShareAbility extends ShareExtensionAbility {
   onCreate(): void {
     PreferencesHelper.init(this.context);
-    HistoryDB.init(this.context);
+    HistoryDB.init(this.context).catch((err: BusinessError) => {
+      hilog.error(0x0000, 'ShareAbility', `HistoryDB.init failed: ${err.code} ${err.message}`);
+    });
   }
 
   onSessionCreate(want: Want, session: UIExtensionContentSession): void {
@@ -31,6 +33,8 @@ export default class ShareAbility extends ShareExtensionAbility {
                 sharedText = record.content ?? '';
               }
             } catch (e) {
+              const err = e as BusinessError;
+              hilog.error(0x0000, 'ShareAbility', `getTypeDescriptor failed: ${err.code} ${err.message}`);
               sharedText = record.content ?? '';
             }
           } else {
@@ -68,6 +72,7 @@ export default class ShareAbility extends ShareExtensionAbility {
       }
     } catch (e) {
       const err = e as BusinessError;
+      hilog.error(0x0000, 'ShareAbility', `decodeImageBarcode failed: ${err.code} ${err.message}`);
     }
     return '';
   }

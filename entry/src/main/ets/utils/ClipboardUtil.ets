@@ -1,4 +1,5 @@
-import { pasteboard } from '@kit.BasicServicesKit';
+import { pasteboard, BusinessError } from '@kit.BasicServicesKit';
+import { hilog } from '@kit.PerformanceAnalysisKit';
 
 export function copyToClipboard(uiContext: UIContext, text: string): void {
   try {
@@ -6,10 +7,12 @@ export function copyToClipboard(uiContext: UIContext, text: string): void {
     pasteboard.getSystemPasteboard().setData(pasteData);
     uiContext.getPromptAction().showToast({ message: $r('app.string.copied') });
   } catch (e) {
+    const err = e as BusinessError;
+    hilog.error(0x0000, 'ClipboardUtil', `copyToClipboard failed: ${err.code} ${err.message}`);
     try {
       uiContext.getPromptAction().showToast({ message: $r('app.string.copy_failed') });
-    } catch (err) {
-      console.info(`showToast failed: ${err}`);
+    } catch (toastErr) {
+      hilog.error(0x0000, 'ClipboardUtil', `showToast failed: ${toastErr}`);
     }
   }
 }

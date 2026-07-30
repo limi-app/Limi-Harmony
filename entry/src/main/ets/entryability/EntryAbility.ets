@@ -1,6 +1,7 @@
 import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
+import { BusinessError } from '@kit.BasicServicesKit';
 import { PreferencesHelper } from '../utils/PreferencesHelper';
 import { HistoryDB } from '../utils/HistoryDB';
 
@@ -15,7 +16,9 @@ export default class EntryAbility extends UIAbility {
     }
 
     PreferencesHelper.init(this.context);
-    HistoryDB.init(this.context);
+    HistoryDB.init(this.context).catch((err: BusinessError) => {
+      hilog.error(DOMAIN, 'EntryAbility', `HistoryDB.init failed: ${err.code} ${err.message}`);
+    });
 
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onCreate');
   }

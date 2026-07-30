@@ -75,7 +75,12 @@ struct Index {
     if (hostContext !== undefined) {
       const context = hostContext as common.UIAbilityContext;
       PreferencesHelper.init(context);
-      await HistoryDB.init(context);
+      try {
+        await HistoryDB.init(context);
+      } catch (err) {
+        const be = err as BusinessError;
+        hilog.error(0x0000, 'Index', `HistoryDB.init failed: ${be.code} ${be.message}`);
+      }
     }
     HistoryDB.setDataChangedCallback(() => {
       this.loadHistory();
