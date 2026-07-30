@@ -5,6 +5,7 @@ import { PreferencesHelper } from '../utils/PreferencesHelper';
 import { HistoryDB } from '../utils/HistoryDB';
 import { scanCore, scanBarcode, detectBarcode } from '@kit.ScanKit';
 import { uniformTypeDescriptor as utd } from '@kit.ArkData';
+import { hilog } from '@kit.PerformanceAnalysisKit';
 
 export default class ShareAbility extends ShareExtensionAbility {
   onCreate(): void {
@@ -72,10 +73,14 @@ export default class ShareAbility extends ShareExtensionAbility {
   }
 
   private loadSharePanel(session: UIExtensionContentSession, shareText: string): void {
-    const storage: LocalStorage = new LocalStorage();
-    storage.setOrCreate('shareText', shareText);
-    storage.setOrCreate('session', session);
-    session.loadContent('pages/SharePanel', storage);
+    AppStorage.setOrCreate('shareText', shareText);
+    AppStorage.setOrCreate('session', session);
+    try {
+      session.loadContent('pages/SharePanel', new LocalStorage());
+    } catch (e) {
+      const err = e as BusinessError;
+      hilog.error(0x0000, 'ShareAbility', `loadContent failed: ${err.code} ${err.message}`);
+    }
   }
 
   private extractTextFromWant(want: Want): string {

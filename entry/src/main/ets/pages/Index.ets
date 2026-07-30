@@ -205,7 +205,10 @@ struct Index {
       value: $r('app.string.scan_qrcode'), icon: $r('sys.symbol.qrcode'), action: () => {
         this.startScan();
       }
-    }])
+    }],
+      {
+        placement: Placement.BottomRight
+      })
   }
 
   openTextSheet(): void {
@@ -323,7 +326,11 @@ struct Index {
         this.getUIContext().getPromptAction().showToast({ message: $r('app.string.share_failed') });
       });
     } catch (e) {
-      this.getUIContext().getPromptAction().showToast({ message: $r('app.string.share_failed') });
+      try {
+        this.getUIContext().getPromptAction().showToast({ message: $r('app.string.share_failed') });
+      } catch (err) {
+        console.info(`showToast failed: ${err}`);
+      }
     }
   }
 

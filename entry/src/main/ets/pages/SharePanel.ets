@@ -19,12 +19,11 @@ struct SharePanelPage {
   @Local isNotHasUrls: boolean = false;
   @Local isError: boolean = false;
   @Local customMaterialLevel: hdsMaterial.MaterialLevel = hdsMaterial.MaterialLevel.EXQUISITE;
-  private storage: LocalStorage = LocalStorage.getShared();
   private session: UIExtensionContentSession | null = null;
 
   aboutToAppear(): void {
-    const shareText = this.storage.get<string>('shareText') ?? '';
-    const sessionObj = this.storage.get<UIExtensionContentSession>('session');
+    const shareText = AppStorage.get<string>('shareText') ?? '';
+    const sessionObj = AppStorage.get<UIExtensionContentSession>('session');
     if (sessionObj !== undefined && sessionObj !== null) {
       this.session = sessionObj;
     }
