@@ -3,11 +3,9 @@ import { HistoryDetailParams } from '../data/model/RouteParams';
 import { HistoryDB } from '../utils/HistoryDB';
 import { buildTitleBarOpts, getMaterialLevel } from '../components/TitleBarBuilder';
 import { formatDatetime } from '../utils/DateUtils';
+import { spacingText } from 'pangu_cjk';
 import {
-  hdsMaterial,
-  HdsNavigation,
-  HdsNavigationTitleMode,
-  IconStyleMode,
+  hdsMaterial, HdsNavigation, HdsNavigationTitleMode, IconStyleMode,
 } from '@kit.UIDesignKit';
 
 @Entry
@@ -64,21 +62,14 @@ struct HistoryDetail {
               .fontColor($r('sys.color.ohos_id_color_text_secondary'))
               .fontWeight(FontWeight.Medium)
 
-            Text(formatDatetime(this.datetime))
+            Text(spacingText(formatDatetime(this.datetime)))
               .fontSize(16)
               .fontColor($r('sys.color.ohos_id_color_text_primary'))
               .width('100%')
               .padding({ bottom: 12 })
-          }
-          .width('100%')
-          .padding(16)
-          .alignItems(HorizontalAlign.Start)
+          }.width('100%').padding(16).alignItems(HorizontalAlign.Start)
         }
-      }
-      .width('100%')
-      .height('100%')
-      .clip(false)
-      .edgeEffect(EdgeEffect.Spring)
+      }.width('100%').height('100%').clip(false).edgeEffect(EdgeEffect.Spring)
     }
     .backgroundColor($r('sys.color.background_secondary'))
     .titleMode(HdsNavigationTitleMode.MINI)
@@ -112,10 +103,8 @@ struct HistoryDetail {
     this.getUIContext().getPromptAction().showDialog({
       title: $r('app.string.confirm_delete_title'),
       message: $r('app.string.confirm_delete_message'),
-      buttons: [
-        { text: $r('app.string.cancel'), color: $r('sys.color.brand') },
-        { text: $r('app.string.confirm'), color: $r('sys.color.ohos_id_color_warning') }
-      ]
+      buttons: [{ text: $r('app.string.cancel'), color: $r('sys.color.brand') },
+        { text: $r('app.string.confirm'), color: $r('sys.color.ohos_id_color_warning') }]
     }).then((result) => {
       if (result.index === 1) {
         this.deleteHistory();
