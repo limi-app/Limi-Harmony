@@ -22,12 +22,6 @@ export class HistoryDB {
     HistoryDB.dataChangedCallback = callback;
   }
 
-  private static notifyDataChanged(): void {
-    if (HistoryDB.dataChangedCallback !== null) {
-      HistoryDB.dataChangedCallback();
-    }
-  }
-
   static async init(context: common.Context): Promise<void> {
     try {
       const config: relationalStore.StoreConfig = {
@@ -105,6 +99,12 @@ export class HistoryDB {
       const err = e as BusinessError;
       hilog.error(0x0000, 'HistoryDB', `deleteById failed: ${err.code} ${err.message}`);
       return 0;
+    }
+  }
+
+  private static notifyDataChanged(): void {
+    if (HistoryDB.dataChangedCallback !== null) {
+      HistoryDB.dataChangedCallback();
     }
   }
 }

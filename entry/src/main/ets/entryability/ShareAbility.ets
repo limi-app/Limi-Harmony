@@ -56,6 +56,12 @@ export default class ShareAbility extends ShareExtensionAbility {
       });
   }
 
+  onSessionDestroy(session: UIExtensionContentSession): void {
+  }
+
+  onDestroy(): void {
+  }
+
   private async decodeImageBarcode(imageUri: string): Promise<string> {
     try {
       const options: scanBarcode.ScanOptions = {
@@ -98,11 +104,5 @@ export default class ShareAbility extends ShareExtensionAbility {
       return want.uri;
     }
     return '';
-  }
-
-  onSessionDestroy(session: UIExtensionContentSession): void {
-  }
-
-  onDestroy(): void {
   }
 }
