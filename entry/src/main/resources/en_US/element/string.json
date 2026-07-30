@@ -1,0 +1,244 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "Limi"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "Limi main ability"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "Limi"
+    },
+    {
+      "name": "ShareAbility_desc",
+      "value": "Process shared URLs"
+    },
+    {
+      "name": "ShareAbility_label",
+      "value": "Limi - Process Link"
+    },
+    {
+      "name": "app_name",
+      "value": "Limi"
+    },
+    {
+      "name": "edit_original_text",
+      "value": "Edit Original Text"
+    },
+    {
+      "name": "processing_results",
+      "value": "Processing Results"
+    },
+    {
+      "name": "copy",
+      "value": "Copy"
+    },
+    {
+      "name": "share",
+      "value": "Share"
+    },
+    {
+      "name": "input_string_is_empty",
+      "value": "The input string is empty."
+    },
+    {
+      "name": "copied",
+      "value": "Copied!"
+    },
+    {
+      "name": "copy_failed",
+      "value": "Copy failed"
+    },
+    {
+      "name": "share_failed",
+      "value": "Share failed"
+    },
+    {
+      "name": "no_links_found",
+      "value": "No links found."
+    },
+    {
+      "name": "processing_error",
+      "value": "Processing error: %s"
+    },
+    {
+      "name": "home",
+      "value": "Home"
+    },
+    {
+      "name": "rule",
+      "value": "Rule"
+    },
+    {
+      "name": "setting",
+      "value": "Setting"
+    },
+    {
+      "name": "confirm",
+      "value": "Confirm"
+    },
+    {
+      "name": "cancel",
+      "value": "Cancel"
+    },
+    {
+      "name": "add",
+      "value": "Add"
+    },
+    {
+      "name": "from_text",
+      "value": "From Text"
+    },
+    {
+      "name": "discard_and_back",
+      "value": "Discard & Back"
+    },
+    {
+      "name": "scan_qrcode",
+      "value": "Scan QRCode"
+    },
+    {
+      "name": "bilibili_rule",
+      "value": "Bilibili"
+    },
+    {
+      "name": "bilibili_rule_desc",
+      "value": "Restore b23.tv short chain to original link"
+    },
+    {
+      "name": "utm_rule",
+      "value": "Urchin Tracking Module"
+    },
+    {
+      "name": "utm_rule_desc",
+      "value": "Remove UTM standard url parameters"
+    },
+    {
+      "name": "utm_enhanced_rule",
+      "value": "UTM Enhanced"
+    },
+    {
+      "name": "utm_enhanced_rule_desc",
+      "value": "Remove all url parameters that start with \"utm_\""
+    },
+    {
+      "name": "common_params_rule",
+      "value": "Common Parameters"
+    },
+    {
+      "name": "common_params_rule_desc",
+      "value": "Remove common url parameters"
+    },
+    {
+      "name": "common_rules_group",
+      "value": "Common Rules"
+    },
+    {
+      "name": "exceptional_rules_group",
+      "value": "Exceptional Rules"
+    },
+    {
+      "name": "no_history",
+      "value": "No history."
+    },
+    {
+      "name": "incognito_mode",
+      "value": "Incognito Mode"
+    },
+    {
+      "name": "incognito_mode_desc",
+      "value": "New processing results will not be stored in history."
+    },
+    {
+      "name": "use_intent_filter",
+      "value": "Use Intent Filter"
+    },
+    {
+      "name": "use_intent_filter_desc",
+      "value": "Use Intent filter instead of system sharing menus."
+    },
+    {
+      "name": "general",
+      "value": "General"
+    },
+    {
+      "name": "about",
+      "value": "About"
+    },
+    {
+      "name": "about_limi",
+      "value": "About Limi"
+    },
+    {
+      "name": "original_text",
+      "value": "Original Text"
+    },
+    {
+      "name": "history_detail",
+      "value": "History Detail"
+    },
+    {
+      "name": "time_label",
+      "value": "Time"
+    },
+    {
+      "name": "back",
+      "value": "Back"
+    },
+    {
+      "name": "delete",
+      "value": "Delete"
+    },
+    {
+      "name": "confirm_delete_title",
+      "value": "Delete Record"
+    },
+    {
+      "name": "confirm_delete_message",
+      "value": "Are you sure you want to delete this history record?"
+    },
+    {
+      "name": "open_source_license",
+      "value": "Open Source Licenses"
+    },
+    {
+      "name": "select_from_gallery",
+      "value": "Select from Gallery"
+    },
+    {
+      "name": "no_qr_code_found",
+      "value": "No QR codes found in the image."
+    },
+    {
+      "name": "x_rule",
+      "value": "X (formerly Twitter)"
+    },
+    {
+      "name": "input_or_paste_text",
+      "value": "Input or paste text containing links"
+    },
+    {
+      "name": "process",
+      "value": "Process"
+    },
+    {
+      "name": "close",
+      "value": "Close"
+    },
+    {
+      "name": "processing",
+      "value": "Processing..."
+    },
+    {
+      "name": "process_link",
+      "value": "Process Link"
+    },
+    {
+      "name": "version_label",
+      "value": "Version: %s"
+    }
+  ]
+}

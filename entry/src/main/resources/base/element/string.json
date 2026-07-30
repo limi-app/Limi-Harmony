@@ -1,0 +1,244 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "Limi"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "Limi main ability"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "Limi"
+    },
+    {
+      "name": "ShareAbility_desc",
+      "value": "使用 Limi 处理分享文本中的链接"
+    },
+    {
+      "name": "ShareAbility_label",
+      "value": "处理链接"
+    },
+    {
+      "name": "app_name",
+      "value": "Limi"
+    },
+    {
+      "name": "edit_original_text",
+      "value": "编辑原文"
+    },
+    {
+      "name": "processing_results",
+      "value": "处理结果"
+    },
+    {
+      "name": "copy",
+      "value": "复制"
+    },
+    {
+      "name": "share",
+      "value": "分享"
+    },
+    {
+      "name": "input_string_is_empty",
+      "value": "传入的字符串为空"
+    },
+    {
+      "name": "copied",
+      "value": "已复制"
+    },
+    {
+      "name": "copy_failed",
+      "value": "复制失败"
+    },
+    {
+      "name": "share_failed",
+      "value": "分享失败"
+    },
+    {
+      "name": "no_links_found",
+      "value": "未找到链接"
+    },
+    {
+      "name": "processing_error",
+      "value": "处理出错：%s"
+    },
+    {
+      "name": "home",
+      "value": "主页"
+    },
+    {
+      "name": "rule",
+      "value": "规则"
+    },
+    {
+      "name": "setting",
+      "value": "设置"
+    },
+    {
+      "name": "confirm",
+      "value": "确认"
+    },
+    {
+      "name": "cancel",
+      "value": "取消"
+    },
+    {
+      "name": "add",
+      "value": "新增"
+    },
+    {
+      "name": "from_text",
+      "value": "来自文本"
+    },
+    {
+      "name": "discard_and_back",
+      "value": "丢弃并返回"
+    },
+    {
+      "name": "scan_qrcode",
+      "value": "扫描二维码"
+    },
+    {
+      "name": "bilibili_rule",
+      "value": "Bilibili"
+    },
+    {
+      "name": "bilibili_rule_desc",
+      "value": "将 b23.tv 短链还原为原始链接"
+    },
+    {
+      "name": "utm_rule",
+      "value": "Urchin Tracking Module"
+    },
+    {
+      "name": "utm_rule_desc",
+      "value": "移除 UTM 标准 Url 参数"
+    },
+    {
+      "name": "utm_enhanced_rule",
+      "value": "UTM 扩展"
+    },
+    {
+      "name": "utm_enhanced_rule_desc",
+      "value": "移除所有以「utm_」开头的 Url 参数"
+    },
+    {
+      "name": "common_params_rule",
+      "value": "公共参数"
+    },
+    {
+      "name": "common_params_rule_desc",
+      "value": "移除常见的 Url 参数"
+    },
+    {
+      "name": "common_rules_group",
+      "value": "通用规则"
+    },
+    {
+      "name": "exceptional_rules_group",
+      "value": "特殊规则"
+    },
+    {
+      "name": "no_history",
+      "value": "暂无历史"
+    },
+    {
+      "name": "incognito_mode",
+      "value": "无痕模式"
+    },
+    {
+      "name": "incognito_mode_desc",
+      "value": "新处理结果不存储到历史记录，已存储的历史记录不受影响"
+    },
+    {
+      "name": "use_intent_filter",
+      "value": "使用意图过滤器"
+    },
+    {
+      "name": "use_intent_filter_desc",
+      "value": "使用 Intent 过滤器替代系统分享菜单"
+    },
+    {
+      "name": "general",
+      "value": "通用"
+    },
+    {
+      "name": "about",
+      "value": "关于"
+    },
+    {
+      "name": "about_limi",
+      "value": "关于 Limi"
+    },
+    {
+      "name": "original_text",
+      "value": "原文"
+    },
+    {
+      "name": "history_detail",
+      "value": "历史详情"
+    },
+    {
+      "name": "time_label",
+      "value": "时间"
+    },
+    {
+      "name": "back",
+      "value": "返回"
+    },
+    {
+      "name": "delete",
+      "value": "删除"
+    },
+    {
+      "name": "confirm_delete_title",
+      "value": "删除记录"
+    },
+    {
+      "name": "confirm_delete_message",
+      "value": "确定要删除这条历史记录吗？"
+    },
+    {
+      "name": "open_source_license",
+      "value": "开放源代码许可"
+    },
+    {
+      "name": "select_from_gallery",
+      "value": "从图库选择"
+    },
+    {
+      "name": "no_qr_code_found",
+      "value": "未在图片中找到二维码"
+    },
+    {
+      "name": "x_rule",
+      "value": "X（原 Twitter）"
+    },
+    {
+      "name": "input_or_paste_text",
+      "value": "输入或粘贴包含链接的文本"
+    },
+    {
+      "name": "process",
+      "value": "处理"
+    },
+    {
+      "name": "close",
+      "value": "关闭"
+    },
+    {
+      "name": "processing",
+      "value": "处理中..."
+    },
+    {
+      "name": "process_link",
+      "value": "处理链接"
+    },
+    {
+      "name": "version_label",
+      "value": "版本：%s"
+    }
+  ]
+}

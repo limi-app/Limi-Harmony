@@ -10,7 +10,3 @@
 /.clang-tidy
 **/.test
 /.appanalyzer
-
-.cache
-build-profile.json5
-.DS_Store
