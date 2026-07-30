@@ -19,12 +19,11 @@ struct SharePanelPage {
   @Local isNotHasUrls: boolean = false;
   @Local isError: boolean = false;
   @Local customMaterialLevel: hdsMaterial.MaterialLevel = hdsMaterial.MaterialLevel.EXQUISITE;
-  private storage: LocalStorage = LocalStorage.getShared();
   private session: UIExtensionContentSession | null = null;
 
   aboutToAppear(): void {
-    const shareText = this.storage.get<string>('shareText') ?? '';
-    const sessionObj = this.storage.get<UIExtensionContentSession>('session');
+    const shareText = AppStorage.get<string>('shareText') ?? '';
+    const sessionObj = AppStorage.get<UIExtensionContentSession>('session');
     if (sessionObj !== undefined && sessionObj !== null) {
       this.session = sessionObj;
     }
@@ -62,6 +61,8 @@ struct SharePanelPage {
   }
 
   closeSession(): void {
+    AppStorage.setOrCreate('shareText', '');
+    AppStorage.setOrCreate('session', null);
     if (this.session !== null) {
       this.session.terminateSelf();
     }
@@ -72,11 +73,17 @@ struct SharePanelPage {
       Column() {
         ProcessPanel({
           isEditing: this.isEditing,
-          onIsEditingChange: (v: boolean) => { this.isEditing = v; },
+          onIsEditingChange: (v: boolean) => {
+            this.isEditing = v;
+          },
           editText: this.editText,
-          onEditTextChange: (v: string) => { this.editText = v; },
+          onEditTextChange: (v: string) => {
+            this.editText = v;
+          },
           originalText: this.originalText,
-          onOriginalTextChange: (v: string) => { this.originalText = v; },
+          onOriginalTextChange: (v: string) => {
+            this.originalText = v;
+          },
           processedText: this.processedText,
           processedUrlList: this.processedUrlList,
           isProcessing: this.isProcessing,

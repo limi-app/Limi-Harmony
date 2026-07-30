@@ -1,4 +1,4 @@
-import { parseUrl, ParsedUrl, rebuildUrlWithQuery, filterParams } from '../../../utils/LinkExtractor';
+import { filterParams, ParsedUrl, parseUrl, rebuildUrlWithQuery } from '../../../utils/LinkExtractor';
 
 const COMMON_TARGET_PARAMS: string[] = [
   'gclid', 'dclid', 'wbraid', 'gbraid', 'gad_source', 'gad_campaignid', 'gclsrc',

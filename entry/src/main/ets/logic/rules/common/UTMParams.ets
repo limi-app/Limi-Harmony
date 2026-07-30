@@ -1,4 +1,4 @@
-import { parseUrl, ParsedUrl, rebuildUrlWithQuery, filterParams } from '../../../utils/LinkExtractor';
+import { filterParams, ParsedUrl, parseUrl, rebuildUrlWithQuery } from '../../../utils/LinkExtractor';
 
 const UTM_TARGET_PARAMS: string[] = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
 

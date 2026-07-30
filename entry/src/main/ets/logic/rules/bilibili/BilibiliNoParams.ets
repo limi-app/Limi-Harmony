@@ -1,4 +1,4 @@
-import { parseUrl, ParsedUrl, rebuildUrlWithQuery } from '../../../utils/LinkExtractor';
+import { ParsedUrl, parseUrl, rebuildUrlWithQuery } from '../../../utils/LinkExtractor';
 
 const BILIBILI_HOST_PATTERN = new RegExp('.+\\.bilibili\\.com');
 

@@ -1,4 +1,4 @@
-import { describe, beforeAll, beforeEach, afterEach, afterAll, it, expect } from '@ohos/hypium';
+import { describe, expect, it } from '@ohos/hypium';
 import { processUTMParams } from '../main/ets/logic/rules/common/CommonParams';
 
 function parseQueryParams(url: string): Record<string, string[]> {

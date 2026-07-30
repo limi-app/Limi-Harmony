@@ -1,9 +1,9 @@
-import { router } from '@kit.ArkUI';
 import { HistoryDetailParams } from '../data/model/RouteParams';
 import { HistoryDB } from '../utils/HistoryDB';
 import { buildTitleBarOpts, getMaterialLevel } from '../components/TitleBarBuilder';
 import { formatDatetime } from '../utils/DateUtils';
 import { spacingText } from 'pangu_cjk';
+import { BusinessError } from '@kit.BasicServicesKit';
 import {
   hdsMaterial, HdsNavigation, HdsNavigationTitleMode, IconStyleMode,
 } from '@kit.UIDesignKit';
@@ -18,7 +18,7 @@ struct HistoryDetail {
   private historyId: number = -1;
 
   aboutToAppear(): void {
-    const params = router.getParams() as HistoryDetailParams;
+    const params = this.getUIContext().getRouter().getParams() as HistoryDetailParams;
     if (params !== null && params !== undefined) {
       this.historyId = params.historyId ?? -1;
       this.originUrl = params.originUrl ?? '';
@@ -100,15 +100,25 @@ struct HistoryDetail {
   }
 
   showDeleteConfirmDialog(): void {
-    this.getUIContext().getPromptAction().showDialog({
-      title: $r('app.string.confirm_delete_title'),
-      message: $r('app.string.confirm_delete_message'),
-      buttons: [{ text: $r('app.string.cancel'), color: $r('sys.color.brand') },
-        { text: $r('app.string.confirm'), color: $r('sys.color.ohos_id_color_warning') }]
-    }).then((result) => {
-      if (result.index === 1) {
-        this.deleteHistory();
-      }
-    });
+    try {
+      this.getUIContext()
+        .getPromptAction()
+        .showDialog({
+          title: $r('app.string.confirm_delete_title'),
+          message: $r('app.string.confirm_delete_message'),
+          buttons: [{ text: $r('app.string.cancel'), color: $r('sys.color.brand') },
+            { text: $r('app.string.confirm'), color: $r('sys.color.ohos_id_color_warning') }]
+        })
+        .then((result) => {
+          if (result.index === 1) {
+            this.deleteHistory();
+          }
+        })
+        .catch((err: BusinessError) => {
+          console.info(`showDialog failed: ${err.code} ${err.message}`);
+        });
+    } catch (e) {
+      console.info(`showDialog failed: ${e}`);
+    }
   }
 }

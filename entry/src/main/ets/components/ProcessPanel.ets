@@ -3,39 +3,41 @@ import { ActionButton } from './ActionButton';
 @ComponentV2
 export struct ProcessPanel {
   @Param isEditing: boolean = false;
-  @Event onIsEditingChange: (value: boolean) => void = () => {
-  };
-
   @Param editText: string = '';
-  @Event onEditTextChange: (value: string) => void = () => {
-  };
-
   @Param originalText: string = '';
-  @Event onOriginalTextChange: (value: string) => void = () => {
-  };
-
   @Param processedText: string = '';
   @Param processedUrlList: string[] = [];
   @Param isProcessing: boolean = false;
   @Param isEmpty: boolean = false;
   @Param isNotHasUrls: boolean = false;
   @Param isError: boolean = false;
-
   @Param urlIcon: Resource = $r('sys.symbol.link');
   @Param showShareButton: boolean = false;
-
-  @Event onConfirm: (text: string) => void = () => {
-  };
-  @Event onCopy: (text: string) => void = () => {
-  };
-  @Event onShare: (text: string) => void = () => {
-  };
-
   @Local containerWidth: number = 360;
   @Local useAnimation: boolean = false;
 
+  @Event onIsEditingChange: (value: boolean) => void = () => {
+  };
+
+  @Event onEditTextChange: (value: string) => void = () => {
+  };
+
+  @Event onOriginalTextChange: (value: string) => void = () => {
+  };
+
+  @Event onConfirm: (text: string) => void = () => {
+  };
+
+  @Event onCopy: (text: string) => void = () => {
+  };
+
+  @Event onShare: (text: string) => void = () => {
+  };
+
   aboutToAppear(): void {
-    setTimeout(() => { this.useAnimation = true; }, 50);
+    setTimeout(() => {
+      this.useAnimation = true;
+    }, 50);
   }
 
   build() {

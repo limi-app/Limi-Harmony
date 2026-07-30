@@ -1,4 +1,4 @@
-import { parseUrl, ParsedUrl } from '../../../utils/LinkExtractor';
+import { ParsedUrl, parseUrl } from '../../../utils/LinkExtractor';
 import { getRedirectsUrl } from '../../../utils/HttpUtil';
 import { isBilibiliNoParamsTarget, processBilibiliNoParamsUrl } from './BilibiliNoParams';
 

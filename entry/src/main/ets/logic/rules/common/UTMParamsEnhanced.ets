@@ -1,4 +1,4 @@
-import { parseUrl, ParsedUrl, rebuildUrlWithQuery, filterParamsByPrefix } from '../../../utils/LinkExtractor';
+import { filterParamsByPrefix, ParsedUrl, parseUrl, rebuildUrlWithQuery } from '../../../utils/LinkExtractor';
 
 export function processUTMParamsEnhanced(url: string): string {
   const parsed: ParsedUrl | null = parseUrl(url);
