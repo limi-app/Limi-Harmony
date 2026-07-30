@@ -10,9 +10,7 @@ import { hilog } from '@kit.PerformanceAnalysisKit';
 export default class ShareAbility extends ShareExtensionAbility {
   onCreate(): void {
     PreferencesHelper.init(this.context);
-    HistoryDB.init(this.context).catch((err: BusinessError) => {
-      hilog.error(0x0000, 'ShareAbility', `HistoryDB.init failed: ${err.code} ${err.message}`);
-    });
+    HistoryDB.init(this.context);
   }
 
   onSessionCreate(want: Want, session: UIExtensionContentSession): void {

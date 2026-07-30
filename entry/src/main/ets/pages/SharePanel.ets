@@ -61,6 +61,8 @@ struct SharePanelPage {
   }
 
   closeSession(): void {
+    AppStorage.setOrCreate('shareText', '');
+    AppStorage.setOrCreate('session', null);
     if (this.session !== null) {
       this.session.terminateSelf();
     }

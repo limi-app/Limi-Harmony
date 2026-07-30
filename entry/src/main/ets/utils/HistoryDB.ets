@@ -40,7 +40,6 @@ export class HistoryDB {
       HistoryDB.rdbStore = null;
       const err = e as BusinessError;
       hilog.error(0x0000, 'HistoryDB', `init failed: ${err.code} ${err.message}`);
-      throw new Error(`HistoryDB init failed: ${err.code} ${err.message}`);
     }
   }
 
