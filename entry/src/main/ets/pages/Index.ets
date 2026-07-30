@@ -25,6 +25,7 @@ import { common } from '@kit.AbilityKit';
 import { systemShare } from '@kit.ShareKit';
 import { uniformTypeDescriptor as utd } from '@kit.ArkData';
 import { scanBarcode, scanCore } from '@kit.ScanKit';
+import { hilog } from '@kit.PerformanceAnalysisKit';
 
 interface MenuItem {
   symbolGlyph: SymbolGlyphModifier;
@@ -70,9 +71,12 @@ struct Index {
   private tabController: HdsTabsController = new HdsTabsController();
 
   async aboutToAppear(): Promise<void> {
-    const context = getContext(this) as common.UIAbilityContext;
-    PreferencesHelper.init(context);
-    await HistoryDB.init(context);
+    const hostContext = this.getUIContext().getHostContext();
+    if (hostContext !== undefined) {
+      const context = hostContext as common.UIAbilityContext;
+      PreferencesHelper.init(context);
+      await HistoryDB.init(context);
+    }
     HistoryDB.setDataChangedCallback(() => {
       this.loadHistory();
     });
@@ -193,22 +197,15 @@ struct Index {
     .height('100%')
     .justifyContent(FlexAlign.Center)
     .alignItems(VerticalAlign.Center)
-    .bindMenu([
-      {
-        value: $r('app.string.from_text'),
-        icon: $r('sys.symbol.text_alignleft'),
-        action: () => {
-          this.openTextSheet();
-        }
-      },
-      {
-        value: $r('app.string.scan_qrcode'),
-        icon: $r('sys.symbol.qrcode'),
-        action: () => {
-          this.startScan();
-        }
+    .bindMenu([{
+      value: $r('app.string.from_text'), icon: $r('sys.symbol.text_alignleft'), action: () => {
+        this.openTextSheet();
       }
-    ])
+    }, {
+      value: $r('app.string.scan_qrcode'), icon: $r('sys.symbol.qrcode'), action: () => {
+        this.startScan();
+      }
+    }])
   }
 
   openTextSheet(): void {
@@ -220,11 +217,13 @@ struct Index {
 
   async startScan(): Promise<void> {
     try {
-      const context = getContext(this) as common.UIAbilityContext;
+      const hostContext = this.getUIContext().getHostContext();
+      if (hostContext === undefined) {
+        return;
+      }
+      const context = hostContext as common.UIAbilityContext;
       const options: scanBarcode.ScanOptions = {
-        scanTypes: [scanCore.ScanType.QR_CODE],
-        enableMultiMode: true,
-        enableAlbum: true,
+        scanTypes: [scanCore.ScanType.QR_CODE], enableMultiMode: true, enableAlbum: true,
       };
       const scanResult = await scanBarcode.startScanForResult(context, options);
       const text = scanResult.originalValue;
@@ -237,7 +236,10 @@ struct Index {
       }
     } catch (e) {
       const err = e as BusinessError;
-      this.getUIContext().getPromptAction().showToast({ message: $r('app.string.scan_qrcode') });
+      if (err.code !== 1000500002) {
+        hilog.error(0x0001, '[Scan Sample]',
+          `Failed to start the scanning service. Code:${err.code}, message: ${err.message}`);
+      }
     }
   }
 
@@ -310,7 +312,11 @@ struct Index {
         utd: utd.UniformDataType.TEXT, content: text
       });
       const controller: systemShare.ShareController = new systemShare.ShareController(shareData);
-      const context: common.UIAbilityContext = getContext(this) as common.UIAbilityContext;
+      const hostContext = this.getUIContext().getHostContext();
+      if (hostContext === undefined) {
+        return;
+      }
+      const context: common.UIAbilityContext = hostContext as common.UIAbilityContext;
       controller.show(context, {
         selectionMode: systemShare.SelectionMode.SINGLE, previewMode: systemShare.SharePreviewMode.DEFAULT
       }).catch((err: BusinessError) => {

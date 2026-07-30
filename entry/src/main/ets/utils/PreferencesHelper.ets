@@ -7,36 +7,53 @@ export class PreferencesHelper {
   private static store: preferences.Preferences | null = null;
 
   static init(context: common.Context): void {
-    PreferencesHelper.store = preferences.getPreferencesSync(context, { name: STORE_NAME });
+    try {
+      PreferencesHelper.store = preferences.getPreferencesSync(context, { name: STORE_NAME });
+    } catch (e) {
+    }
   }
 
   static getBoolean(key: string, defaultValue: boolean): boolean {
     if (PreferencesHelper.store === null) {
       return defaultValue;
     }
-    return PreferencesHelper.store.getSync(key, defaultValue) as boolean;
+    try {
+      return PreferencesHelper.store.getSync(key, defaultValue) as boolean;
+    } catch (e) {
+      return defaultValue;
+    }
   }
 
   static setBoolean(key: string, value: boolean): void {
     if (PreferencesHelper.store === null) {
       return;
     }
-    PreferencesHelper.store.putSync(key, value);
-    PreferencesHelper.store.flush();
+    try {
+      PreferencesHelper.store.putSync(key, value);
+      PreferencesHelper.store.flush();
+    } catch (e) {
+    }
   }
 
   static getString(key: string, defaultValue: string): string {
     if (PreferencesHelper.store === null) {
       return defaultValue;
     }
-    return PreferencesHelper.store.getSync(key, defaultValue) as string;
+    try {
+      return PreferencesHelper.store.getSync(key, defaultValue) as string;
+    } catch (e) {
+      return defaultValue;
+    }
   }
 
   static setString(key: string, value: string): void {
     if (PreferencesHelper.store === null) {
       return;
     }
-    PreferencesHelper.store.putSync(key, value);
-    PreferencesHelper.store.flush();
+    try {
+      PreferencesHelper.store.putSync(key, value);
+      PreferencesHelper.store.flush();
+    } catch (e) {
+    }
   }
 }

@@ -1,4 +1,3 @@
-import { router } from '@kit.ArkUI';
 import { HistoryDetailParams } from '../data/model/RouteParams';
 import { HistoryDB } from '../utils/HistoryDB';
 import { buildTitleBarOpts, getMaterialLevel } from '../components/TitleBarBuilder';
@@ -18,7 +17,7 @@ struct HistoryDetail {
   private historyId: number = -1;
 
   aboutToAppear(): void {
-    const params = router.getParams() as HistoryDetailParams;
+    const params = this.getUIContext().getRouter().getParams() as HistoryDetailParams;
     if (params !== null && params !== undefined) {
       this.historyId = params.historyId ?? -1;
       this.originUrl = params.originUrl ?? '';
