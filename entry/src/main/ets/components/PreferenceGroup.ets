@@ -33,7 +33,7 @@ export struct PreferenceGroup {
               .fontSize(14)
               .fontColor($r('sys.color.ohos_id_color_text_secondary'))
               .fontWeight(FontWeight.Medium)
-              .margin({ top: 16,left:12 })
+              .margin({ top: 12, left: 12 })
           }
         }
         ListItem() {
@@ -42,27 +42,28 @@ export struct PreferenceGroup {
               Column() {
                 this.itemContent(item, itemIndex)
               }.width('100%')
+
               if (itemIndex < section.items.length - 1) {
-                Divider()
-                  .strokeWidth(1)
-                  .color($r('sys.color.comp_background_tertiary'))
-                  .margin({ left: 6, right: 6 })
+                Divider().strokeWidth(1).color($r('sys.color.comp_background_tertiary')).margin({ left: 9, right: 9 })
               }
             }, (item: object, itemIndex: number) => `${sectionIndex}_${itemIndex}`)
           }
           .width('100%')
           .backgroundColor($r('sys.color.comp_background_list_card'))
           .borderRadius(this.cardRadius)
-          .padding({ left: 6, right: 6,top: 6, bottom: 6 })
+          .padding({
+            left: 6,
+            right: 6,
+            top: 6,
+            bottom: 6
+          })
           .clip(true)
         }
       }, (section: ListGroupSection, sectionIndex: number) => `${sectionIndex}`)
-    }
-    .width('100%')
-    .height('100%')
-    .padding({ left: 16, right: 16 })
-    .clip(false)
-    .edgeEffect(EdgeEffect.Spring)
+    }.width('100%').height('100%').padding({
+      left: 16,
+      right: 16
+    }).clip(false).cachedCount(4, true).edgeEffect(EdgeEffect.Spring)
   }
 }
 
@@ -82,14 +83,12 @@ export struct SwitchItem {
           text: this.title
         }, description: {
           text: this.summary,
-          modifier: this.maxLines
-            ? new TextModifier()
-              .fontColor($r('sys.color.ohos_id_color_text_secondary'))
-              .maxLines(this.maxLines)
-              .textOverflow({ overflow: TextOverflow.Ellipsis })
-            : undefined
+          modifier: this.maxLines ? new TextModifier().fontColor($r('sys.color.ohos_id_color_text_secondary'))
+            .maxLines(this.maxLines)
+            .textOverflow({ overflow: TextOverflow.Ellipsis }) : undefined
         }
-      }, suffixItem: new SuffixSwitch({
+      },
+      suffixItem: new SuffixSwitch({
         isCheck: this.checked, onChange: (isCheck: boolean) => {
           this.onChange(isCheck);
         }
@@ -117,16 +116,12 @@ export struct NavigationItem {
           text: this.title
         }, description: {
           text: this.summary,
-          modifier: this.maxLines
-            ? new TextModifier()
-              .fontColor($r('sys.color.ohos_id_color_text_secondary'))
-              .maxLines(this.maxLines)
-              .textOverflow({ overflow: TextOverflow.Ellipsis })
-            : undefined
+          modifier: this.maxLines ? new TextModifier().fontColor($r('sys.color.ohos_id_color_text_secondary'))
+            .maxLines(this.maxLines)
+            .textOverflow({ overflow: TextOverflow.Ellipsis }) : undefined
         }
       },
-      suffixItem: this.showArrow ? new SuffixArrow({ color: $r('sys.color.ohos_id_color_text_secondary') }) :
-        undefined,
+      suffixItem: this.showArrow ? new SuffixArrow({ color: $r('sys.color.ohos_id_color_text_secondary') }) : undefined,
       cardPrefixMargin: 0,
       cardSuffixMargin: 0,
       cardBackgroundColor: $r('sys.color.ohos_id_color_background_transparent'),
