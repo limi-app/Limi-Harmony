@@ -1,7 +1,9 @@
 export class RuleConfig {
-  commonParams: boolean = true;
   UTMParams: boolean = true;
   UTMParamsEnhanced: boolean = false;
   bilibili: boolean = true;
-  x: boolean = true;
+  firefoxQueryStripping: boolean = false;
+  braveCleanUrls: boolean = false;
+  braveDebounce: boolean = false;
+  braveQueryFilter: boolean = false;
 }

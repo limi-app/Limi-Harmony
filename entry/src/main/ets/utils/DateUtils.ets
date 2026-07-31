@@ -26,6 +26,16 @@ export function formatTime(dateStr: string): string {
   }
 }
 
+export function formatTimestamp(timestamp: number): string {
+  try {
+    const date = new Date(timestamp);
+    const iso = date.toISOString();
+    return formatDate(iso) + ' ' + formatTime(iso);
+  } catch (e) {
+    return '';
+  }
+}
+
 export function formatDatetime(dateStr: string): string {
   try {
     const date = new Date(dateStr);

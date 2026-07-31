@@ -125,20 +125,52 @@
       "value": "移除所有以「utm_」开头的 Url 参数"
     },
     {
-      "name": "common_params_rule",
-      "value": "公共参数"
+      "name": "local_rules_group",
+      "value": "本地规则"
     },
     {
-      "name": "common_params_rule_desc",
-      "value": "移除常见的 Url 参数"
-    },
-    {
-      "name": "common_rules_group",
-      "value": "通用规则"
+      "name": "cloud_rules_group",
+      "value": "云端规则"
     },
     {
       "name": "exceptional_rules_group",
       "value": "特殊规则"
+    },
+    {
+      "name": "firefox_query_stripping_rule",
+      "value": "Firefox Query Parameter Stripping"
+    },
+    {
+      "name": "brave_clean_urls_rule",
+      "value": "Brave Clean Urls"
+    },
+    {
+      "name": "brave_debounce_rule",
+      "value": "Brave Debounce"
+    },
+    {
+      "name": "brave_query_filter_rule",
+      "value": "Brave Query Filter"
+    },
+    {
+      "name": "sync_rules",
+      "value": "同步规则"
+    },
+    {
+      "name": "sync_rules_failed_title",
+      "value": "同步失败"
+    },
+    {
+      "name": "sync_rules_failed_message",
+      "value": "同步云端规则失败，请检查网络连接后重试"
+    },
+    {
+      "name": "cloud_rules_not_synced",
+      "value": "尚未同步"
+    },
+    {
+      "name": "cloud_rules_version",
+      "value": "当前版本：%s"
     },
     {
       "name": "no_history",
@@ -211,10 +243,6 @@
     {
       "name": "no_qr_code_found",
       "value": "未在图片中找到二维码"
-    },
-    {
-      "name": "x_rule",
-      "value": "X（原 Twitter）"
     },
     {
       "name": "input_or_paste_text",

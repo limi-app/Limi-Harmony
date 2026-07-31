@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@ohos/hypium';
-import { processUTMParams } from '../main/ets/logic/rules/common/CommonParams';
+import { processUTMParams } from '../main/ets/logic/rules/common/UTMParams';
 
 function parseQueryParams(url: string): Record<string, string[]> {
   const qIdx = url.indexOf('?');

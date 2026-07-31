@@ -1,7 +1,7 @@
 import { HistoryDetailParams } from '../data/model/RouteParams';
 import { HistoryDB } from '../utils/HistoryDB';
 import { buildTitleBarOpts, getMaterialLevel } from '../components/TitleBarBuilder';
-import { formatDatetime } from '../utils/DateUtils';
+import { formatDate, formatTime } from '../utils/DateUtils';
 import { spacingText } from 'pangu_cjk';
 import { BusinessError } from '@kit.BasicServicesKit';
 import {
@@ -62,9 +62,10 @@ struct HistoryDetail {
               .fontColor($r('sys.color.ohos_id_color_text_secondary'))
               .fontWeight(FontWeight.Medium)
 
-            Text(spacingText(formatDatetime(this.datetime)))
+            Text(spacingText(formatDate(this.datetime) + ' ' + formatTime(this.datetime)))
               .fontSize(16)
               .fontColor($r('sys.color.ohos_id_color_text_primary'))
+              .copyOption(CopyOptions.LocalDevice)
               .width('100%')
               .padding({ bottom: 12 })
           }.width('100%').padding(16).alignItems(HorizontalAlign.Start)

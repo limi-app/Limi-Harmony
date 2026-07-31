@@ -1,12 +1,22 @@
-import { hdsMaterial, HdsNavigation, HdsNavigationTitleMode, HdsTabs, HdsTabsController } from '@kit.UIDesignKit';
+import { hdsMaterial, HdsNavigation, HdsNavigationTitleMode, HdsTabs, HdsTabsController, IconStyleMode } from '@kit.UIDesignKit';
 import { SymbolGlyphModifier } from '@kit.ArkUI';
-import { RulePage } from './RulePage';
+import { RulePage, RuleId } from './RulePage';
 import { spacingText } from 'pangu_cjk';
 import { SettingPage } from './SettingPage';
 import { HistoryDB } from '../utils/HistoryDB';
 import { PreferencesHelper } from '../utils/PreferencesHelper';
 import { LimiHistory } from '../data/model/LimiHistory';
-import { processLinksInText } from '../logic/Rule';
+import { processLinksInText, RuleIds } from '../logic/Rule';
+import {
+  FirefoxRuleKeys,
+  CleanUrlsRuleKeys,
+  DebounceRuleKeys,
+  QueryFilterRuleKeys,
+  syncQueryStripping,
+  syncCleanUrls,
+  syncDebounce,
+  syncQueryFilter,
+} from '../logic/rules/cloud/CloudRuleRepository';
 import { HistoryDetailParams } from '../data/model/RouteParams';
 import { ListGroupSection, NavigationItem, PreferenceGroup, PreferenceItem } from '../components/PreferenceGroup';
 import { ProcessPanel } from '../components/ProcessPanel';
@@ -62,6 +72,16 @@ struct Index {
   @Local isEditing: boolean = true;
   @Local editText: string = '';
   @Local customMaterialLevel: hdsMaterial.MaterialLevel = hdsMaterial.MaterialLevel.EXQUISITE;
+  @Local isFirefoxRuleEnabled: boolean = false;
+  @Local isBraveCleanUrlsEnabled: boolean = false;
+  @Local isBraveDebounceEnabled: boolean = false;
+  @Local isBraveQueryFilterEnabled: boolean = false;
+  @Local isSyncing: boolean = false;
+  @Local cloudVersionTime: number = 0;
+  @Local braveCleanUrlsVersion: string = '';
+  @Local braveDebounceVersion: string = '';
+  @Local braveQueryFilterVersion: string = '';
+  @Local syncErrorDetail: string = '';
   private tabController: HdsTabsController = new HdsTabsController();
 
   async aboutToAppear(): Promise<void> {
@@ -71,6 +91,14 @@ struct Index {
       PreferencesHelper.init(context);
       await HistoryDB.init(context);
     }
+    this.isFirefoxRuleEnabled = PreferencesHelper.getBoolean(RuleIds.FIREFOX_QUERY_STRIPPING, false);
+    this.isBraveCleanUrlsEnabled = PreferencesHelper.getBoolean(RuleIds.BRAVE_CLEAN_URLS, false);
+    this.isBraveDebounceEnabled = PreferencesHelper.getBoolean(RuleIds.BRAVE_DEBOUNCE, false);
+    this.isBraveQueryFilterEnabled = PreferencesHelper.getBoolean(RuleIds.BRAVE_QUERY_FILTER, false);
+    this.cloudVersionTime = PreferencesHelper.getLong(FirefoxRuleKeys.QUERY_STRIPPING_LAST_MODIFIED, 0);
+    this.braveCleanUrlsVersion = PreferencesHelper.getString(CleanUrlsRuleKeys.VERSION_HASH, '');
+    this.braveDebounceVersion = PreferencesHelper.getString(DebounceRuleKeys.VERSION_HASH, '');
+    this.braveQueryFilterVersion = PreferencesHelper.getString(QueryFilterRuleKeys.VERSION_HASH, '');
     HistoryDB.setDataChangedCallback(() => {
       this.loadHistory();
     });
@@ -87,65 +115,106 @@ struct Index {
   }
 
   build() {
-    HdsNavigation() {
-      HdsTabs({ controller: this.tabController, index: this.currentPage }) {
-        ForEach(MENU_CONFIG, (item: MenuItem, index: number) => {
-          TabContent() {
-            if (index === 0) {
-              this.HomeContent()
-            } else if (index === 1) {
-              RulePage()
-            } else {
-              SettingPage()
+    Stack({ alignContent: Alignment.TopEnd }) {
+      HdsNavigation() {
+        HdsTabs({ controller: this.tabController, index: this.currentPage }) {
+          ForEach(MENU_CONFIG, (item: MenuItem, index: number) => {
+            TabContent() {
+              if (index === 0) {
+                this.HomeContent()
+              } else if (index === 1) {
+                RulePage({
+                  cloudVersionTime: this.cloudVersionTime,
+                  braveCleanUrlsVersion: this.braveCleanUrlsVersion,
+                  braveDebounceVersion: this.braveDebounceVersion,
+                  braveQueryFilterVersion: this.braveQueryFilterVersion,
+                  onCloudRuleEnabledChange: (id: string, value: boolean) => {
+                    this.onCloudRuleEnabledChange(id, value);
+                  }
+                })
+              } else {
+                SettingPage()
+              }
             }
+            .clip(false)
+            .padding({ bottom: 80 })
+            .tabBar(new BottomTabBarStyle({ normal: item.symbolGlyph, selected: item.symbolGlyph1 }, item.label))
+          }, (item: MenuItem, index: number) => `${index}`)
+        }
+        .barPosition(BarPosition.End)
+        .barOverlap(true)
+        .animationDuration(300)
+        .vertical(false)
+        .barFloatingStyle({
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE, materialLevel: this.customMaterialLevel,
+          }, miniBar: {
+            miniBarBuilder: () => this.miniBarBuilder(),
+          },
+        })
+        .onChange((index: number) => {
+          this.currentPage = index;
+          if (index === 0) {
+            this.loadHistory();
           }
-          .clip(false)
-          .padding({ bottom: 80 })
-          .tabBar(new BottomTabBarStyle({ normal: item.symbolGlyph, selected: item.symbolGlyph1 }, item.label))
-        }, (item: MenuItem, index: number) => `${index}`)
+        })
+        .clip(false)
       }
-      .barPosition(BarPosition.End)
-      .barOverlap(true)
-      .animationDuration(300)
-      .vertical(false)
-      .barFloatingStyle({
-        systemMaterialEffect: {
-          materialType: hdsMaterial.MaterialType.ADAPTIVE, materialLevel: this.customMaterialLevel,
-        }, miniBar: {
-          miniBarBuilder: () => this.miniBarBuilder(),
+      .titleMode(HdsNavigationTitleMode.MINI)
+      .titleBar(buildTitleBarOpts(this.currentPage === 0 ? 'Limi' : MENU_CONFIG[this.currentPage].label,
+        this.customMaterialLevel,
+        this.currentPage === 1 && this.isAnyCloudRuleEnabled() ? {
+          menu: {
+            value: this.isSyncing ? [] : [{
+              content: {
+                label: $r('app.string.sync_rules'),
+                icon: $r('sys.symbol.arrow_2_circlepath'),
+                type: IconStyleMode.NORMAL,
+                isEnabled: !this.isSyncing,
+                componentId: 'sync',
+                action: () => {
+                  this.syncCloudRules();
+                }
+              }
+            }]
+          },
+        } : {menu:{}}))
+      .hideBackButton(true)
+      .width('100%')
+      .height('100%')
+      .backgroundColor($r('sys.color.background_secondary'))
+      .bindSheet(this.showInputSheet, this.SheetContent(), {
+        height: SheetSize.FIT_CONTENT,
+        showClose: true,
+        title: { title: $r('app.string.process_link') },
+        onDisappear: () => {
+          this.showInputSheet = false;
+          this.originalText = '';
+          this.editText = '';
+          this.processedText = '';
+          this.processedUrlList = [];
+          this.isEditing = true;
+          this.isEmpty = false;
+          this.isNotHasUrls = false;
+          this.isError = false;
         },
       })
-      .onChange((index: number) => {
-        this.currentPage = index;
-        if (index === 0) {
-          this.loadHistory();
-        }
-      })
-      .clip(false)
+
+      this.LoadingOverlay()
     }
-    .titleMode(HdsNavigationTitleMode.MINI)
-    .titleBar(buildTitleBarOpts(this.currentPage === 0 ? 'Limi' : MENU_CONFIG[this.currentPage].label,
-      this.customMaterialLevel,))
-    .hideBackButton(true)
     .width('100%')
     .height('100%')
-    .backgroundColor($r('sys.color.background_secondary'))
-    .bindSheet(this.showInputSheet, this.SheetContent(), {
-      height: SheetSize.FIT_CONTENT,
-      showClose: true,
-      title: { title: $r('app.string.process_link') },
-      onDisappear: () => {
-        this.showInputSheet = false;
-        this.originalText = '';
-        this.editText = '';
-        this.processedText = '';
-        this.processedUrlList = [];
-        this.isEditing = true;
-        this.isEmpty = false;
-        this.isNotHasUrls = false;
-        this.isError = false;
-      },
-    })
+  }
+
+  @Builder
+  LoadingOverlay() {
+    if (this.isSyncing && this.currentPage === 1 && this.isAnyCloudRuleEnabled()) {
+      LoadingProgress()
+        .width(24)
+        .height(24)
+        .margin({ top: 16, right: 24 })
+        .color($r('sys.color.icon_primary'))
+    }
   }
 
   @Builder
@@ -316,7 +385,8 @@ struct Index {
     const groups = this.getGroupedHistory();
     const sections: ListGroupSection[] = [];
     for (let i = 0; i < groups.length; i++) {
-      sections.push(new ListGroupSection(spacingText(groups[i].date), groups[i].items));
+      sections.push(new ListGroupSection(spacingText(groups[i].date), groups[i].items,
+        (item: PreferenceItem) => (item as LimiHistory).id.toString()));
     }
     return sections;
   }
@@ -344,6 +414,82 @@ struct Index {
       .catch((err: BusinessError) => {
         hilog.error(0x0001, 'Index', `pushUrl failed: ${err.code} ${err.message}`);
       });
+  }
+
+  async syncCloudRules(): Promise<void> {
+    if (this.isSyncing) {
+      return;
+    }
+    if (!this.isAnyCloudRuleEnabled()) {
+      return;
+    }
+    this.isSyncing = true;
+    this.syncErrorDetail = '';
+    try {
+      if (this.isFirefoxRuleEnabled) {
+        await syncQueryStripping();
+        this.cloudVersionTime = PreferencesHelper.getLong(FirefoxRuleKeys.QUERY_STRIPPING_LAST_MODIFIED, 0);
+      }
+      if (this.isBraveCleanUrlsEnabled) {
+        await syncCleanUrls();
+        this.braveCleanUrlsVersion = PreferencesHelper.getString(CleanUrlsRuleKeys.VERSION_HASH, '');
+      }
+      if (this.isBraveDebounceEnabled) {
+        await syncDebounce();
+        this.braveDebounceVersion = PreferencesHelper.getString(DebounceRuleKeys.VERSION_HASH, '');
+      }
+      if (this.isBraveQueryFilterEnabled) {
+        await syncQueryFilter();
+        this.braveQueryFilterVersion = PreferencesHelper.getString(QueryFilterRuleKeys.VERSION_HASH, '');
+      }
+    } catch (e) {
+      const err = e as BusinessError;
+      this.syncErrorDetail = err.message ?? '';
+      this.showSyncErrorDialog();
+    } finally {
+      this.isSyncing = false;
+    }
+  }
+
+  onCloudRuleEnabledChange(id: string, value: boolean): void {
+    switch (id) {
+      case RuleId.FIREFOX_QUERY_STRIPPING:
+        this.isFirefoxRuleEnabled = value;
+        break;
+      case RuleId.BRAVE_CLEAN_URLS:
+        this.isBraveCleanUrlsEnabled = value;
+        break;
+      case RuleId.BRAVE_DEBOUNCE:
+        this.isBraveDebounceEnabled = value;
+        break;
+      case RuleId.BRAVE_QUERY_FILTER:
+        this.isBraveQueryFilterEnabled = value;
+        break;
+      default:
+        break;
+    }
+  }
+
+  isAnyCloudRuleEnabled(): boolean {
+    return this.isFirefoxRuleEnabled || this.isBraveCleanUrlsEnabled ||
+      this.isBraveDebounceEnabled || this.isBraveQueryFilterEnabled;
+  }
+
+  showSyncErrorDialog(): void {
+    try {
+      const message = this.syncErrorDetail.length > 0
+        ? this.syncErrorDetail
+        : $r('app.string.sync_rules_failed_message');
+      this.getUIContext().getPromptAction().showDialog({
+        title: $r('app.string.sync_rules_failed_title'),
+        message: message,
+        buttons: [{ text: $r('app.string.confirm'), color: $r('sys.color.brand') }]
+      }).catch((err: BusinessError) => {
+        hilog.error(0x0001, 'Index', `showDialog failed: ${err.code} ${err.message}`);
+      });
+    } catch (e) {
+      hilog.error(0x0001, 'Index', `showDialog failed: ${e}`);
+    }
   }
 
   getGroupedHistory(): HistoryGroup[] {

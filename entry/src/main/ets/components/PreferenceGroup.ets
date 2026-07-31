@@ -10,10 +10,13 @@ export interface PreferenceItem {
 export class ListGroupSection {
   title: string | Resource = '';
   items: PreferenceItem[] = [];
+  keyGenerator: ((item: PreferenceItem) => string) | null = null;
 
-  constructor(title: string | Resource = '', items: PreferenceItem[] = []) {
+  constructor(title: string | Resource = '', items: PreferenceItem[] = [],
+    keyGenerator: ((item: PreferenceItem) => string) | null = null) {
     this.title = title;
     this.items = items;
+    this.keyGenerator = keyGenerator;
   }
 }
 
@@ -57,7 +60,12 @@ export struct PreferenceGroup {
               if (itemIndex < section.items.length - 1) {
                 Divider().strokeWidth(1).color($r('sys.color.comp_background_tertiary')).margin({ left: 9, right: 9 })
               }
-            }, (item: PreferenceItem, itemIndex: number) => `${sectionIndex}_${itemIndex}`)
+            }, (item: PreferenceItem, itemIndex: number) => {
+              if (section.keyGenerator !== null) {
+                return section.keyGenerator(item);
+              }
+              return `${sectionIndex}_${itemIndex}`;
+            })
           }
           .width('100%')
           .backgroundColor($r('sys.color.comp_background_list_card'))
@@ -70,7 +78,7 @@ export struct PreferenceGroup {
           })
           .clip(true)
         }
-      }, (section: ListGroupSection, sectionIndex: number) => `${sectionIndex}`)
+      }, (section: ListGroupSection, sectionIndex: number) => `${sectionIndex}_${section.items.length}`)
     }
     .width('100%')
     .height('100%')
