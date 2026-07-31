@@ -1,13 +1,22 @@
 import { hdsMaterial, HdsNavigation, HdsNavigationTitleMode, HdsTabs, HdsTabsController, IconStyleMode } from '@kit.UIDesignKit';
 import { SymbolGlyphModifier } from '@kit.ArkUI';
-import { RulePage } from './RulePage';
+import { RulePage, RuleId } from './RulePage';
 import { spacingText } from 'pangu_cjk';
 import { SettingPage } from './SettingPage';
 import { HistoryDB } from '../utils/HistoryDB';
 import { PreferencesHelper } from '../utils/PreferencesHelper';
 import { LimiHistory } from '../data/model/LimiHistory';
 import { processLinksInText, RuleIds } from '../logic/Rule';
-import { CloudRuleKeys, syncQueryStripping } from '../logic/rules/cloud/CloudRuleRepository';
+import {
+  FirefoxRuleKeys,
+  CleanUrlsRuleKeys,
+  DebounceRuleKeys,
+  QueryFilterRuleKeys,
+  syncQueryStripping,
+  syncCleanUrls,
+  syncDebounce,
+  syncQueryFilter,
+} from '../logic/rules/cloud/CloudRuleRepository';
 import { HistoryDetailParams } from '../data/model/RouteParams';
 import { ListGroupSection, NavigationItem, PreferenceGroup, PreferenceItem } from '../components/PreferenceGroup';
 import { ProcessPanel } from '../components/ProcessPanel';
@@ -64,8 +73,14 @@ struct Index {
   @Local editText: string = '';
   @Local customMaterialLevel: hdsMaterial.MaterialLevel = hdsMaterial.MaterialLevel.EXQUISITE;
   @Local isFirefoxRuleEnabled: boolean = false;
+  @Local isBraveCleanUrlsEnabled: boolean = false;
+  @Local isBraveDebounceEnabled: boolean = false;
+  @Local isBraveQueryFilterEnabled: boolean = false;
   @Local isSyncing: boolean = false;
   @Local cloudVersionTime: number = 0;
+  @Local braveCleanUrlsVersion: string = '';
+  @Local braveDebounceVersion: string = '';
+  @Local braveQueryFilterVersion: string = '';
   @Local syncErrorDetail: string = '';
   private tabController: HdsTabsController = new HdsTabsController();
 
@@ -77,7 +92,13 @@ struct Index {
       await HistoryDB.init(context);
     }
     this.isFirefoxRuleEnabled = PreferencesHelper.getBoolean(RuleIds.FIREFOX_QUERY_STRIPPING, false);
-    this.cloudVersionTime = PreferencesHelper.getLong(CloudRuleKeys.QUERY_STRIPPING_LAST_MODIFIED, 0);
+    this.isBraveCleanUrlsEnabled = PreferencesHelper.getBoolean(RuleIds.BRAVE_CLEAN_URLS, false);
+    this.isBraveDebounceEnabled = PreferencesHelper.getBoolean(RuleIds.BRAVE_DEBOUNCE, false);
+    this.isBraveQueryFilterEnabled = PreferencesHelper.getBoolean(RuleIds.BRAVE_QUERY_FILTER, false);
+    this.cloudVersionTime = PreferencesHelper.getLong(FirefoxRuleKeys.QUERY_STRIPPING_LAST_MODIFIED, 0);
+    this.braveCleanUrlsVersion = PreferencesHelper.getString(CleanUrlsRuleKeys.VERSION_HASH, '');
+    this.braveDebounceVersion = PreferencesHelper.getString(DebounceRuleKeys.VERSION_HASH, '');
+    this.braveQueryFilterVersion = PreferencesHelper.getString(QueryFilterRuleKeys.VERSION_HASH, '');
     HistoryDB.setDataChangedCallback(() => {
       this.loadHistory();
     });
@@ -104,8 +125,11 @@ struct Index {
               } else if (index === 1) {
                 RulePage({
                   cloudVersionTime: this.cloudVersionTime,
-                  onFirefoxRuleEnabledChange: (value: boolean) => {
-                    this.isFirefoxRuleEnabled = value;
+                  braveCleanUrlsVersion: this.braveCleanUrlsVersion,
+                  braveDebounceVersion: this.braveDebounceVersion,
+                  braveQueryFilterVersion: this.braveQueryFilterVersion,
+                  onCloudRuleEnabledChange: (id: RuleId, value: boolean) => {
+                    this.onCloudRuleEnabledChange(id, value);
                   }
                 })
               } else {
@@ -139,7 +163,7 @@ struct Index {
       .titleMode(HdsNavigationTitleMode.MINI)
       .titleBar(buildTitleBarOpts(this.currentPage === 0 ? 'Limi' : MENU_CONFIG[this.currentPage].label,
         this.customMaterialLevel,
-        this.currentPage === 1 && this.isFirefoxRuleEnabled ? {
+        this.currentPage === 1 && this.isAnyCloudRuleEnabled() ? {
           menu: {
             value: this.isSyncing ? [] : [{
               content: {
@@ -396,14 +420,28 @@ struct Index {
     if (this.isSyncing) {
       return;
     }
-    if (!this.isFirefoxRuleEnabled) {
+    if (!this.isAnyCloudRuleEnabled()) {
       return;
     }
     this.isSyncing = true;
     this.syncErrorDetail = '';
     try {
-      await syncQueryStripping();
-      this.cloudVersionTime = PreferencesHelper.getLong(CloudRuleKeys.QUERY_STRIPPING_LAST_MODIFIED, 0);
+      if (this.isFirefoxRuleEnabled) {
+        await syncQueryStripping();
+        this.cloudVersionTime = PreferencesHelper.getLong(FirefoxRuleKeys.QUERY_STRIPPING_LAST_MODIFIED, 0);
+      }
+      if (this.isBraveCleanUrlsEnabled) {
+        await syncCleanUrls();
+        this.braveCleanUrlsVersion = PreferencesHelper.getString(CleanUrlsRuleKeys.VERSION_HASH, '');
+      }
+      if (this.isBraveDebounceEnabled) {
+        await syncDebounce();
+        this.braveDebounceVersion = PreferencesHelper.getString(DebounceRuleKeys.VERSION_HASH, '');
+      }
+      if (this.isBraveQueryFilterEnabled) {
+        await syncQueryFilter();
+        this.braveQueryFilterVersion = PreferencesHelper.getString(QueryFilterRuleKeys.VERSION_HASH, '');
+      }
     } catch (e) {
       const err = e as BusinessError;
       this.syncErrorDetail = err.message ?? '';
@@ -411,6 +449,30 @@ struct Index {
     } finally {
       this.isSyncing = false;
     }
+  }
+
+  onCloudRuleEnabledChange(id: RuleId, value: boolean): void {
+    switch (id) {
+      case RuleId.FIREFOX_QUERY_STRIPPING:
+        this.isFirefoxRuleEnabled = value;
+        break;
+      case RuleId.BRAVE_CLEAN_URLS:
+        this.isBraveCleanUrlsEnabled = value;
+        break;
+      case RuleId.BRAVE_DEBOUNCE:
+        this.isBraveDebounceEnabled = value;
+        break;
+      case RuleId.BRAVE_QUERY_FILTER:
+        this.isBraveQueryFilterEnabled = value;
+        break;
+      default:
+        break;
+    }
+  }
+
+  isAnyCloudRuleEnabled(): boolean {
+    return this.isFirefoxRuleEnabled || this.isBraveCleanUrlsEnabled ||
+      this.isBraveDebounceEnabled || this.isBraveQueryFilterEnabled;
   }
 
   showSyncErrorDialog(): void {

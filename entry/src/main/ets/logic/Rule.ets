@@ -4,8 +4,16 @@ import { processUTMParamsEnhanced } from './rules/common/UTMParamsEnhanced';
 import { getBilibiliRedirectTargetHost, processBilibiliRedirectUrl } from './rules/bilibili/BilibiliRedirects';
 import { isBilibiliNoParamsTarget, processBilibiliNoParamsUrl } from './rules/bilibili/BilibiliNoParams';
 import { getXNoParamsTargetHost, processXNoParamsUrl } from './rules/x/XNoParams';
-import { getCachedQueryStripping } from './rules/cloud/CloudRuleRepository';
-import { processQueryStripping } from './rules/cloud/QueryStripping';
+import {
+  getCachedQueryStripping,
+  getCachedCleanUrlsRules,
+  getCachedDebounceRules,
+  getCachedQueryFilterRules,
+} from './rules/cloud/CloudRuleRepository';
+import { processQueryStripping } from './rules/cloud/firefox/QueryStripping';
+import { processCleanUrls } from './rules/cloud/brave/CleanUrls';
+import { processDebounce } from './rules/cloud/brave/Debounce';
+import { processQueryFilter } from './rules/cloud/brave/QueryFilter';
 import { extractUrlList, ParsedUrl, parseUrl } from '../utils/LinkExtractor';
 import { PreferencesHelper } from '../utils/PreferencesHelper';
 
@@ -15,6 +23,9 @@ export class RuleIds {
   static readonly UTM_PARAMS_ENHANCED: string = 'utm_params_enhanced_rules';
   static readonly X: string = 'x_rules';
   static readonly FIREFOX_QUERY_STRIPPING: string = 'firefox_query_stripping_rules';
+  static readonly BRAVE_CLEAN_URLS: string = 'brave_clean_urls_rules';
+  static readonly BRAVE_DEBOUNCE: string = 'brave_debounce_rules';
+  static readonly BRAVE_QUERY_FILTER: string = 'brave_query_filter_rules';
   static readonly INCOGNITO_MODE: string = 'incognito_mode';
 }
 
@@ -25,22 +36,38 @@ export async function processUrl(urlString: string): Promise<string> {
   ruleConfig.bilibili = PreferencesHelper.getBoolean(RuleIds.BILIBILI, true);
   ruleConfig.x = PreferencesHelper.getBoolean(RuleIds.X, true);
   ruleConfig.firefoxQueryStripping = PreferencesHelper.getBoolean(RuleIds.FIREFOX_QUERY_STRIPPING, false);
+  ruleConfig.braveCleanUrls = PreferencesHelper.getBoolean(RuleIds.BRAVE_CLEAN_URLS, false);
+  ruleConfig.braveDebounce = PreferencesHelper.getBoolean(RuleIds.BRAVE_DEBOUNCE, false);
+  ruleConfig.braveQueryFilter = PreferencesHelper.getBoolean(RuleIds.BRAVE_QUERY_FILTER, false);
 
   let finalUrl = urlString;
 
-  const parsed: ParsedUrl | null = parseUrl(urlString);
+  // 第一层：去重定向跳转（Brave Debounce）
+  if (ruleConfig.braveDebounce) {
+    const rules = getCachedDebounceRules();
+    if (rules.length > 0) {
+      const target = processDebounce(finalUrl, rules);
+      if (target !== null) {
+        finalUrl = target;
+      }
+    }
+  }
+
+  // 第二层：特定 Host 匹配处理
+  const parsed: ParsedUrl | null = parseUrl(finalUrl);
   if (parsed !== null) {
     const host = parsed.host.toLowerCase();
 
     if (ruleConfig.bilibili && isInHostList(host, getBilibiliRedirectTargetHost())) {
-      finalUrl = await processBilibiliRedirectUrl(urlString);
+      finalUrl = await processBilibiliRedirectUrl(finalUrl);
     } else if (ruleConfig.bilibili && isBilibiliNoParamsTarget(host)) {
-      finalUrl = processBilibiliNoParamsUrl(urlString);
+      finalUrl = processBilibiliNoParamsUrl(finalUrl);
     } else if (ruleConfig.x && isInHostList(host, getXNoParamsTargetHost())) {
-      finalUrl = processXNoParamsUrl(urlString);
+      finalUrl = processXNoParamsUrl(finalUrl);
     }
   }
 
+  // 第三层：通用参数去除处理
   if (ruleConfig.UTMParams) {
     finalUrl = processUTMParams(finalUrl);
   }
@@ -51,6 +78,18 @@ export async function processUrl(urlString: string): Promise<string> {
     const cloudData = getCachedQueryStripping();
     if (cloudData.stripList.length > 0) {
       finalUrl = processQueryStripping(finalUrl, cloudData.stripList, cloudData.allowList);
+    }
+  }
+  if (ruleConfig.braveCleanUrls) {
+    const rules = getCachedCleanUrlsRules();
+    if (rules.length > 0) {
+      finalUrl = processCleanUrls(finalUrl, rules);
+    }
+  }
+  if (ruleConfig.braveQueryFilter) {
+    const rules = getCachedQueryFilterRules();
+    if (rules.length > 0) {
+      finalUrl = processQueryFilter(finalUrl, rules);
     }
   }
 

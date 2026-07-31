@@ -8,6 +8,9 @@ export enum RuleId {
   UTM_PARAMS = 'utm_params',
   UTM_ENHANCED = 'utm_enhanced',
   FIREFOX_QUERY_STRIPPING = 'firefox_query_stripping',
+  BRAVE_CLEAN_URLS = 'brave_clean_urls',
+  BRAVE_DEBOUNCE = 'brave_debounce',
+  BRAVE_QUERY_FILTER = 'brave_query_filter',
   BILIBILI = 'bilibili',
   X = 'x',
 }
@@ -25,11 +28,17 @@ export struct RulePage {
     [RuleId.UTM_PARAMS, true],
     [RuleId.UTM_ENHANCED, false],
     [RuleId.FIREFOX_QUERY_STRIPPING, false],
+    [RuleId.BRAVE_CLEAN_URLS, false],
+    [RuleId.BRAVE_DEBOUNCE, false],
+    [RuleId.BRAVE_QUERY_FILTER, false],
     [RuleId.BILIBILI, true],
     [RuleId.X, true],
   ]);
   @Param cloudVersionTime: number = 0;
-  @Event onFirefoxRuleEnabledChange: (value: boolean) => void = () => {
+  @Param braveCleanUrlsVersion: string = '';
+  @Param braveDebounceVersion: string = '';
+  @Param braveQueryFilterVersion: string = '';
+  @Event onCloudRuleEnabledChange: (id: RuleId, value: boolean) => void = () => {
   };
   private readonly localRuleItems: RuleItem[] = [
     {
@@ -52,6 +61,24 @@ export struct RulePage {
       summary: $r('app.string.cloud_rules_not_synced'),
       prefKey: RuleIds.FIREFOX_QUERY_STRIPPING,
     },
+    {
+      id: RuleId.BRAVE_CLEAN_URLS,
+      title: $r('app.string.brave_clean_urls_rule'),
+      summary: $r('app.string.cloud_rules_not_synced'),
+      prefKey: RuleIds.BRAVE_CLEAN_URLS,
+    },
+    {
+      id: RuleId.BRAVE_QUERY_FILTER,
+      title: $r('app.string.brave_query_filter_rule'),
+      summary: $r('app.string.cloud_rules_not_synced'),
+      prefKey: RuleIds.BRAVE_QUERY_FILTER,
+    },
+    {
+      id: RuleId.BRAVE_DEBOUNCE,
+      title: $r('app.string.brave_debounce_rule'),
+      summary: $r('app.string.cloud_rules_not_synced'),
+      prefKey: RuleIds.BRAVE_DEBOUNCE,
+    },
   ];
   private readonly exceptionalRuleItems: RuleItem[] = [
     {
@@ -73,6 +100,9 @@ export struct RulePage {
       [RuleId.UTM_PARAMS, PreferencesHelper.getBoolean(RuleIds.UTM_PARAMS, true)],
       [RuleId.UTM_ENHANCED, PreferencesHelper.getBoolean(RuleIds.UTM_PARAMS_ENHANCED, false)],
       [RuleId.FIREFOX_QUERY_STRIPPING, PreferencesHelper.getBoolean(RuleIds.FIREFOX_QUERY_STRIPPING, false)],
+      [RuleId.BRAVE_CLEAN_URLS, PreferencesHelper.getBoolean(RuleIds.BRAVE_CLEAN_URLS, false)],
+      [RuleId.BRAVE_DEBOUNCE, PreferencesHelper.getBoolean(RuleIds.BRAVE_DEBOUNCE, false)],
+      [RuleId.BRAVE_QUERY_FILTER, PreferencesHelper.getBoolean(RuleIds.BRAVE_QUERY_FILTER, false)],
       [RuleId.BILIBILI, PreferencesHelper.getBoolean(RuleIds.BILIBILI, true)],
       [RuleId.X, PreferencesHelper.getBoolean(RuleIds.X, true)],
     ]);
@@ -88,8 +118,11 @@ export struct RulePage {
     next.set(id, value);
     this.ruleStates = next;
     PreferencesHelper.setBoolean(prefKey, value);
-    if (id === RuleId.FIREFOX_QUERY_STRIPPING) {
-      this.onFirefoxRuleEnabledChange(value);
+    if (id === RuleId.FIREFOX_QUERY_STRIPPING ||
+      id === RuleId.BRAVE_CLEAN_URLS ||
+      id === RuleId.BRAVE_DEBOUNCE ||
+      id === RuleId.BRAVE_QUERY_FILTER) {
+      this.onCloudRuleEnabledChange(id, value);
     }
   }
 
@@ -99,6 +132,21 @@ export struct RulePage {
         return $r('app.string.cloud_rules_version', spacingText(formatTimestamp(this.cloudVersionTime)));
       }
       return $r('app.string.cloud_rules_not_synced');
+    }
+    if (item.id === RuleId.BRAVE_CLEAN_URLS) {
+      return this.braveCleanUrlsVersion.length > 0
+        ? $r('app.string.cloud_rules_version', this.braveCleanUrlsVersion.substring(0, 8))
+        : $r('app.string.cloud_rules_not_synced');
+    }
+    if (item.id === RuleId.BRAVE_DEBOUNCE) {
+      return this.braveDebounceVersion.length > 0
+        ? $r('app.string.cloud_rules_version', this.braveDebounceVersion.substring(0, 8))
+        : $r('app.string.cloud_rules_not_synced');
+    }
+    if (item.id === RuleId.BRAVE_QUERY_FILTER) {
+      return this.braveQueryFilterVersion.length > 0
+        ? $r('app.string.cloud_rules_version', this.braveQueryFilterVersion.substring(0, 8))
+        : $r('app.string.cloud_rules_not_synced');
     }
     return item.summary;
   }

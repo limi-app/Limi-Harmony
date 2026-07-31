@@ -141,6 +141,18 @@
       "value": "Firefox Query Parameter Stripping"
     },
     {
+      "name": "brave_clean_urls_rule",
+      "value": "Brave Clean URLs"
+    },
+    {
+      "name": "brave_debounce_rule",
+      "value": "Brave Debounce"
+    },
+    {
+      "name": "brave_query_filter_rule",
+      "value": "Brave Query Filter"
+    },
+    {
       "name": "sync_rules",
       "value": "Sync Rules"
     },

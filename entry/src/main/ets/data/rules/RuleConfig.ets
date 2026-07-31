@@ -4,4 +4,7 @@ export class RuleConfig {
   bilibili: boolean = true;
   x: boolean = true;
   firefoxQueryStripping: boolean = false;
+  braveCleanUrls: boolean = false;
+  braveDebounce: boolean = false;
+  braveQueryFilter: boolean = false;
 }

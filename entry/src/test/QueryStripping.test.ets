@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@ohos/hypium';
-import { parseQueryStrippingRecords, processQueryStripping } from '../main/ets/logic/rules/cloud/QueryStripping';
+import { parseQueryStrippingRecords, processQueryStripping } from '../main/ets/logic/rules/cloud/firefox/QueryStripping';
 
 export default function queryStrippingTest() {
   describe('QueryStrippingTest', () => {

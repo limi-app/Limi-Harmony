@@ -120,7 +120,7 @@ function removeTrailingDotFromHost(url: string): string {
   }
 }
 
-interface ParsedUrl {
+export interface ParsedUrl {
   protocol: string;
   host: string;
   port: string;
@@ -129,7 +129,7 @@ interface ParsedUrl {
   fragment: string;
 }
 
-function parseUrl(url: string): ParsedUrl | null {
+export function parseUrl(url: string): ParsedUrl | null {
   try {
     let protocol = '';
     let rest = url;
@@ -271,5 +271,3 @@ export function filterParamsByPrefix(query: string, prefix: string): string {
   }
   return kept.join('&');
 }
-
-export { parseUrl, ParsedUrl };

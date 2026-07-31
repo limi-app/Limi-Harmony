@@ -1,4 +1,10 @@
-import { ParsedUrl, parseUrl, rebuildUrlWithQuery } from '../../../utils/LinkExtractor';
+import { ParsedUrl, parseUrl, rebuildUrlWithQuery } from '../../../../utils/LinkExtractor';
+
+export class FirefoxRuleKeys {
+  static readonly QUERY_STRIPPING_STRIP_LIST: string = 'cloud_query_stripping_strip_list';
+  static readonly QUERY_STRIPPING_ALLOW_LIST: string = 'cloud_query_stripping_allow_list';
+  static readonly QUERY_STRIPPING_LAST_MODIFIED: string = 'cloud_query_stripping_last_modified';
+}
 
 export interface QueryStrippingRecord {
   stripList: string[];
