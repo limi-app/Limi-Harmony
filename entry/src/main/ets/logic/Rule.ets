@@ -3,7 +3,6 @@ import { processUTMParams } from './rules/common/UTMParams';
 import { processUTMParamsEnhanced } from './rules/common/UTMParamsEnhanced';
 import { getBilibiliRedirectTargetHost, processBilibiliRedirectUrl } from './rules/bilibili/BilibiliRedirects';
 import { isBilibiliNoParamsTarget, processBilibiliNoParamsUrl } from './rules/bilibili/BilibiliNoParams';
-import { getXNoParamsTargetHost, processXNoParamsUrl } from './rules/x/XNoParams';
 import {
   getCachedQueryStripping,
   getCachedCleanUrlsRules,
@@ -21,7 +20,6 @@ export class RuleIds {
   static readonly BILIBILI: string = 'bilibili_rules';
   static readonly UTM_PARAMS: string = 'utm_params_rules';
   static readonly UTM_PARAMS_ENHANCED: string = 'utm_params_enhanced_rules';
-  static readonly X: string = 'x_rules';
   static readonly FIREFOX_QUERY_STRIPPING: string = 'firefox_query_stripping_rules';
   static readonly BRAVE_CLEAN_URLS: string = 'brave_clean_urls_rules';
   static readonly BRAVE_DEBOUNCE: string = 'brave_debounce_rules';
@@ -34,7 +32,6 @@ export async function processUrl(urlString: string): Promise<string> {
   ruleConfig.UTMParams = PreferencesHelper.getBoolean(RuleIds.UTM_PARAMS, true);
   ruleConfig.UTMParamsEnhanced = PreferencesHelper.getBoolean(RuleIds.UTM_PARAMS_ENHANCED, false);
   ruleConfig.bilibili = PreferencesHelper.getBoolean(RuleIds.BILIBILI, true);
-  ruleConfig.x = PreferencesHelper.getBoolean(RuleIds.X, true);
   ruleConfig.firefoxQueryStripping = PreferencesHelper.getBoolean(RuleIds.FIREFOX_QUERY_STRIPPING, false);
   ruleConfig.braveCleanUrls = PreferencesHelper.getBoolean(RuleIds.BRAVE_CLEAN_URLS, false);
   ruleConfig.braveDebounce = PreferencesHelper.getBoolean(RuleIds.BRAVE_DEBOUNCE, false);
@@ -62,8 +59,6 @@ export async function processUrl(urlString: string): Promise<string> {
       finalUrl = await processBilibiliRedirectUrl(finalUrl);
     } else if (ruleConfig.bilibili && isBilibiliNoParamsTarget(host)) {
       finalUrl = processBilibiliNoParamsUrl(finalUrl);
-    } else if (ruleConfig.x && isInHostList(host, getXNoParamsTargetHost())) {
-      finalUrl = processXNoParamsUrl(finalUrl);
     }
   }
 

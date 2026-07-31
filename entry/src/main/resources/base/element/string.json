@@ -142,7 +142,7 @@
     },
     {
       "name": "brave_clean_urls_rule",
-      "value": "Brave Clean URLs"
+      "value": "Brave Clean Urls"
     },
     {
       "name": "brave_debounce_rule",
@@ -243,10 +243,6 @@
     {
       "name": "no_qr_code_found",
       "value": "未在图片中找到二维码"
-    },
-    {
-      "name": "x_rule",
-      "value": "X（原 Twitter）"
     },
     {
       "name": "input_or_paste_text",

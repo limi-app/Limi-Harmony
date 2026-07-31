@@ -16,7 +16,6 @@ export class RuleId {
   static readonly BRAVE_DEBOUNCE: string = RuleIds.BRAVE_DEBOUNCE;
   static readonly BRAVE_QUERY_FILTER: string = RuleIds.BRAVE_QUERY_FILTER;
   static readonly BILIBILI: string = RuleIds.BILIBILI;
-  static readonly X: string = RuleIds.X;
 }
 
 export interface RuleItem extends PreferenceItem {
@@ -35,7 +34,6 @@ export struct RulePage {
     [RuleId.BRAVE_DEBOUNCE, false],
     [RuleId.BRAVE_QUERY_FILTER, false],
     [RuleId.BILIBILI, true],
-    [RuleId.X, true],
   ]);
   @Param cloudVersionTime: number = 0;
   @Param braveCleanUrlsVersion: string = '';
@@ -83,11 +81,6 @@ export struct RulePage {
       title: $r('app.string.bilibili_rule'),
       summary: $r('app.string.bilibili_rule_desc'),
     },
-    {
-      id: RuleId.X,
-      title: $r('app.string.x_rule'),
-      summary: '',
-    },
   ];
 
   async aboutToAppear(): Promise<void> {
@@ -99,7 +92,6 @@ export struct RulePage {
       [RuleId.BRAVE_DEBOUNCE, PreferencesHelper.getBoolean(RuleIds.BRAVE_DEBOUNCE, false)],
       [RuleId.BRAVE_QUERY_FILTER, PreferencesHelper.getBoolean(RuleIds.BRAVE_QUERY_FILTER, false)],
       [RuleId.BILIBILI, PreferencesHelper.getBoolean(RuleIds.BILIBILI, true)],
-      [RuleId.X, PreferencesHelper.getBoolean(RuleIds.X, true)],
     ]);
   }
 
