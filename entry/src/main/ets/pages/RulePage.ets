@@ -10,11 +10,11 @@ export enum RuleId {
   X = 'x',
 }
 
-export class RuleItem implements PreferenceItem {
-  id: RuleId = RuleId.COMMON_PARAMS;
-  title: string | Resource = '';
-  summary: string | Resource = '';
-  prefKey: string = '';
+export interface RuleItem extends PreferenceItem {
+  id: RuleId;
+  title: string | Resource;
+  summary: string | Resource;
+  prefKey: string;
 }
 
 @ComponentV2

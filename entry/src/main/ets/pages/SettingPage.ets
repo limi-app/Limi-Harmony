@@ -8,8 +8,8 @@ export enum SettingKind {
   ABOUT_LIMI = 'about_limi',
 }
 
-export class SettingItem implements PreferenceItem {
-  kind: SettingKind = SettingKind.INCOGNITO;
+export interface SettingItem extends PreferenceItem {
+  kind: SettingKind;
 }
 
 @ComponentV2

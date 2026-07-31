@@ -316,7 +316,8 @@ struct Index {
     const groups = this.getGroupedHistory();
     const sections: ListGroupSection[] = [];
     for (let i = 0; i < groups.length; i++) {
-      sections.push(new ListGroupSection(spacingText(groups[i].date), groups[i].items));
+      sections.push(new ListGroupSection(spacingText(groups[i].date), groups[i].items,
+        (item: PreferenceItem) => (item as LimiHistory).id.toString()));
     }
     return sections;
   }
