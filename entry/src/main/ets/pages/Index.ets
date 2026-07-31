@@ -128,7 +128,7 @@ struct Index {
                   braveCleanUrlsVersion: this.braveCleanUrlsVersion,
                   braveDebounceVersion: this.braveDebounceVersion,
                   braveQueryFilterVersion: this.braveQueryFilterVersion,
-                  onCloudRuleEnabledChange: (id: RuleId, value: boolean) => {
+                  onCloudRuleEnabledChange: (id: string, value: boolean) => {
                     this.onCloudRuleEnabledChange(id, value);
                   }
                 })
@@ -208,7 +208,7 @@ struct Index {
 
   @Builder
   LoadingOverlay() {
-    if (this.isSyncing && this.currentPage === 1 && this.isFirefoxRuleEnabled) {
+    if (this.isSyncing && this.currentPage === 1 && this.isAnyCloudRuleEnabled()) {
       LoadingProgress()
         .width(24)
         .height(24)
@@ -451,7 +451,7 @@ struct Index {
     }
   }
 
-  onCloudRuleEnabledChange(id: RuleId, value: boolean): void {
+  onCloudRuleEnabledChange(id: string, value: boolean): void {
     switch (id) {
       case RuleId.FIREFOX_QUERY_STRIPPING:
         this.isFirefoxRuleEnabled = value;

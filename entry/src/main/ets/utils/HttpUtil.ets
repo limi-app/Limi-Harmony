@@ -20,9 +20,14 @@ export async function fetchText(url: string): Promise<string> {
     }
     return response.result as string;
   } catch (e) {
-    const err = e as BusinessError;
-    hilog.error(DOMAIN, TAG, `fetchText failed: code=${err.code}, message=${err.message}`);
-    throw new Error(err.message ?? `HTTP request failed (code ${err.code})`);
+    if (e instanceof Error) {
+      const message = e.message ?? 'HTTP request failed';
+      const code = (e as BusinessError).code;
+      hilog.error(DOMAIN, TAG, `fetchText failed: code=${code}, message=${message}`);
+      throw new Error(message);
+    }
+    hilog.error(DOMAIN, TAG, `fetchText failed: ${JSON.stringify(e)}`);
+    throw new Error('HTTP request failed');
   } finally {
     httpRequest.destroy();
   }

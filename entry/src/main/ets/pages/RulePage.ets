@@ -4,27 +4,30 @@ import { ListGroupSection, PreferenceGroup, PreferenceItem, SwitchItem } from '.
 import { formatTimestamp } from '../utils/DateUtils';
 import { spacingText } from 'pangu_cjk';
 
-export enum RuleId {
-  UTM_PARAMS = 'utm_params',
-  UTM_ENHANCED = 'utm_enhanced',
-  FIREFOX_QUERY_STRIPPING = 'firefox_query_stripping',
-  BRAVE_CLEAN_URLS = 'brave_clean_urls',
-  BRAVE_DEBOUNCE = 'brave_debounce',
-  BRAVE_QUERY_FILTER = 'brave_query_filter',
-  BILIBILI = 'bilibili',
-  X = 'x',
+/**
+ * 规则标识常量，值派生自 RuleIds，确保唯一真实来源。
+ * 使用 const 对象替代 enum：ArkTS 不支持字符串枚举的计算成员。
+ */
+export class RuleId {
+  static readonly UTM_PARAMS: string = RuleIds.UTM_PARAMS;
+  static readonly UTM_ENHANCED: string = RuleIds.UTM_PARAMS_ENHANCED;
+  static readonly FIREFOX_QUERY_STRIPPING: string = RuleIds.FIREFOX_QUERY_STRIPPING;
+  static readonly BRAVE_CLEAN_URLS: string = RuleIds.BRAVE_CLEAN_URLS;
+  static readonly BRAVE_DEBOUNCE: string = RuleIds.BRAVE_DEBOUNCE;
+  static readonly BRAVE_QUERY_FILTER: string = RuleIds.BRAVE_QUERY_FILTER;
+  static readonly BILIBILI: string = RuleIds.BILIBILI;
+  static readonly X: string = RuleIds.X;
 }
 
 export interface RuleItem extends PreferenceItem {
-  id: RuleId;
+  id: string;
   title: string | Resource;
   summary: string | Resource;
-  prefKey: string;
 }
 
 @ComponentV2
 export struct RulePage {
-  @Local ruleStates: Map<RuleId, boolean> = new Map<RuleId, boolean>([
+  @Local ruleStates: Map<string, boolean> = new Map<string, boolean>([
     [RuleId.UTM_PARAMS, true],
     [RuleId.UTM_ENHANCED, false],
     [RuleId.FIREFOX_QUERY_STRIPPING, false],
@@ -38,20 +41,18 @@ export struct RulePage {
   @Param braveCleanUrlsVersion: string = '';
   @Param braveDebounceVersion: string = '';
   @Param braveQueryFilterVersion: string = '';
-  @Event onCloudRuleEnabledChange: (id: RuleId, value: boolean) => void = () => {
+  @Event onCloudRuleEnabledChange: (id: string, value: boolean) => void = () => {
   };
   private readonly localRuleItems: RuleItem[] = [
     {
       id: RuleId.UTM_PARAMS,
       title: $r('app.string.utm_rule'),
       summary: $r('app.string.utm_rule_desc'),
-      prefKey: RuleIds.UTM_PARAMS,
     },
     {
       id: RuleId.UTM_ENHANCED,
       title: $r('app.string.utm_enhanced_rule'),
       summary: $r('app.string.utm_enhanced_rule_desc'),
-      prefKey: RuleIds.UTM_PARAMS_ENHANCED,
     },
   ];
   private readonly cloudRuleItems: RuleItem[] = [
@@ -59,25 +60,21 @@ export struct RulePage {
       id: RuleId.FIREFOX_QUERY_STRIPPING,
       title: $r('app.string.firefox_query_stripping_rule'),
       summary: $r('app.string.cloud_rules_not_synced'),
-      prefKey: RuleIds.FIREFOX_QUERY_STRIPPING,
     },
     {
       id: RuleId.BRAVE_CLEAN_URLS,
       title: $r('app.string.brave_clean_urls_rule'),
       summary: $r('app.string.cloud_rules_not_synced'),
-      prefKey: RuleIds.BRAVE_CLEAN_URLS,
     },
     {
       id: RuleId.BRAVE_QUERY_FILTER,
       title: $r('app.string.brave_query_filter_rule'),
       summary: $r('app.string.cloud_rules_not_synced'),
-      prefKey: RuleIds.BRAVE_QUERY_FILTER,
     },
     {
       id: RuleId.BRAVE_DEBOUNCE,
       title: $r('app.string.brave_debounce_rule'),
       summary: $r('app.string.cloud_rules_not_synced'),
-      prefKey: RuleIds.BRAVE_DEBOUNCE,
     },
   ];
   private readonly exceptionalRuleItems: RuleItem[] = [
@@ -85,18 +82,16 @@ export struct RulePage {
       id: RuleId.BILIBILI,
       title: $r('app.string.bilibili_rule'),
       summary: $r('app.string.bilibili_rule_desc'),
-      prefKey: RuleIds.BILIBILI,
     },
     {
       id: RuleId.X,
       title: $r('app.string.x_rule'),
       summary: '',
-      prefKey: RuleIds.X,
     },
   ];
 
   async aboutToAppear(): Promise<void> {
-    this.ruleStates = new Map<RuleId, boolean>([
+    this.ruleStates = new Map<string, boolean>([
       [RuleId.UTM_PARAMS, PreferencesHelper.getBoolean(RuleIds.UTM_PARAMS, true)],
       [RuleId.UTM_ENHANCED, PreferencesHelper.getBoolean(RuleIds.UTM_PARAMS_ENHANCED, false)],
       [RuleId.FIREFOX_QUERY_STRIPPING, PreferencesHelper.getBoolean(RuleIds.FIREFOX_QUERY_STRIPPING, false)],
@@ -108,16 +103,16 @@ export struct RulePage {
     ]);
   }
 
-  isRuleEnabled(id: RuleId): boolean {
+  isRuleEnabled(id: string): boolean {
     const value = this.ruleStates.get(id);
     return value ?? false;
   }
 
-  setRuleEnabled(id: RuleId, prefKey: string, value: boolean): void {
-    const next = new Map<RuleId, boolean>(this.ruleStates);
+  setRuleEnabled(id: string, value: boolean): void {
+    const next = new Map<string, boolean>(this.ruleStates);
     next.set(id, value);
     this.ruleStates = next;
-    PreferencesHelper.setBoolean(prefKey, value);
+    PreferencesHelper.setBoolean(id, value);
     if (id === RuleId.FIREFOX_QUERY_STRIPPING ||
       id === RuleId.BRAVE_CLEAN_URLS ||
       id === RuleId.BRAVE_DEBOUNCE ||
@@ -166,7 +161,7 @@ export struct RulePage {
       summary: this.getRuleItemSummary(item as RuleItem),
       checked: this.isRuleEnabled((item as RuleItem).id),
       onChange: (value: boolean) => {
-        this.setRuleEnabled((item as RuleItem).id, (item as RuleItem).prefKey, value);
+        this.setRuleEnabled((item as RuleItem).id, value);
       },
     })
   }

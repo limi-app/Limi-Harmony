@@ -44,7 +44,7 @@ function utf8ToBytes(str: string): number[] {
       i++;
       const low = str.charCodeAt(i);
       const cp = 0x10000 + (((code & 0x3ff) << 10) | (low & 0x3ff));
-      bytes.push(0xf0 | (code >> 18));
+      bytes.push(0xf0 | (cp >> 18));
       bytes.push(0x80 | ((cp >> 12) & 0x3f));
       bytes.push(0x80 | ((cp >> 6) & 0x3f));
       bytes.push(0x80 | (cp & 0x3f));
