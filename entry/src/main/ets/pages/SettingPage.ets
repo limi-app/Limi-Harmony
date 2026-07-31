@@ -1,7 +1,11 @@
 import { RuleIds } from '../logic/Rule';
 import { PreferencesHelper } from '../utils/PreferencesHelper';
-import { NavigationItem, PreferenceGroup, SwitchItem } from '../components/PreferenceGroup';
+import { ListGroupSection, NavigationItem, PreferenceGroup, SwitchItem } from '../components/PreferenceGroup';
 import { bundleManager } from '@kit.AbilityKit';
+
+export class SettingItem {
+  kind: string = '';
+}
 
 @ComponentV2
 export struct SettingPage {
@@ -14,33 +18,47 @@ export struct SettingPage {
     this.appVersion = `v${bundleInfo.versionName} (${bundleInfo.versionCode})`;
   }
 
-  build() {
-    List() {
-      ListItem() {
-        PreferenceGroup({ title: $r('app.string.general') }) {
-          SwitchItem({
-            title: $r('app.string.incognito_mode'),
-            summary: $r('app.string.incognito_mode_desc'),
-            checked: this.incognitoModeEnabled,
-            onChange: (value: boolean) => {
-              this.incognitoModeEnabled = value;
-              PreferencesHelper.setBoolean(RuleIds.INCOGNITO_MODE, value);
-            },
-          })
-        }
-      }
+  getSettingSections(): ListGroupSection[] {
+    const generalItems: SettingItem[] = [{ kind: 'incognito' }];
+    const aboutItems: SettingItem[] = [{ kind: 'about_limi' }];
+    const general = new ListGroupSection();
+    general.title = $r('app.string.general');
+    general.items = generalItems;
+    const about = new ListGroupSection();
+    about.title = $r('app.string.about');
+    about.items = aboutItems;
+    return [general, about];
+  }
 
-      ListItem() {
-        PreferenceGroup({ title: $r('app.string.about') }) {
-          NavigationItem({
-            title: $r('app.string.about_limi'),
-            summary: $r('app.string.version_label', this.appVersion),
-            showArrow: false,
-            onNavClick: () => {
-            },
-          })
-        }
-      }
-    }.width('100%').height('100%').clip(false).edgeEffect(EdgeEffect.Spring)
+  @Builder
+  renderSettingItem(item: object, index: number) {
+    if ((item as SettingItem).kind === 'incognito') {
+      SwitchItem({
+        title: $r('app.string.incognito_mode'),
+        summary: $r('app.string.incognito_mode_desc'),
+        checked: this.incognitoModeEnabled,
+        onChange: (value: boolean) => {
+          this.incognitoModeEnabled = value;
+          PreferencesHelper.setBoolean(RuleIds.INCOGNITO_MODE, value);
+        },
+      })
+    } else {
+      NavigationItem({
+        title: $r('app.string.about_limi'),
+        summary: $r('app.string.version_label', this.appVersion),
+        showArrow: false,
+        onNavClick: () => {
+        },
+      })
+    }
+  }
+
+  build() {
+    PreferenceGroup({
+      sections: this.getSettingSections(),
+      itemContent: (item: object, index: number) => {
+        this.renderSettingItem(item, index);
+      },
+    })
   }
 }

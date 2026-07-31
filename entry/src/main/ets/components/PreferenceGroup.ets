@@ -1,33 +1,68 @@
 import { HdsListItemCard, SuffixArrow, SuffixSwitch } from '@kit.UIDesignKit';
 import { TextModifier } from '@kit.ArkUI';
 
+export class ListGroupSection {
+  title: string | Resource = '';
+  items: object[] = [];
+}
+
 @ComponentV2
 export struct PreferenceGroup {
-  @Param title: string | Resource = '';
-  @BuilderParam content: () => void = this.defaultContent;
+  @Param sections: ListGroupSection[] = [];
+  @Param space: number = 12;
+  @Param cardRadius: number = 21;
+  @BuilderParam itemContent: (item: object, index: number) => void = this.defaultItemContent;
 
   @Builder
-  defaultContent() {
+  defaultItemContent(item: object, index: number) {
+  }
+
+  hasTitle(section: ListGroupSection): boolean {
+    if (typeof section.title === 'string') {
+      return section.title.length > 0;
+    }
+    return true;
   }
 
   build() {
-    Column() {
-      if (typeof this.title === 'string' ? this.title.length > 0 : true) {
-        Text(this.title)
-          .fontSize(14)
-          .fontColor($r('sys.color.ohos_id_color_text_secondary'))
-          .fontWeight(FontWeight.Medium)
-          .margin({
-            bottom: 8,
-            left: 24,
-            right: 24,
-            top: 16
-          })
-      }
-      Column() {
-        this.content()
-      }.width('100%')
-    }.width('100%').margin({ bottom: 8 }).alignItems(HorizontalAlign.Start)
+    List({ space: this.space }) {
+      ForEach(this.sections, (section: ListGroupSection, sectionIndex: number) => {
+        if (this.hasTitle(section)) {
+          ListItem() {
+            Text(section.title)
+              .fontSize(14)
+              .fontColor($r('sys.color.ohos_id_color_text_secondary'))
+              .fontWeight(FontWeight.Medium)
+              .margin({ top: 16,left:12 })
+          }
+        }
+        ListItem() {
+          Column() {
+            ForEach(section.items, (item: object, itemIndex: number) => {
+              Column() {
+                this.itemContent(item, itemIndex)
+              }.width('100%')
+              if (itemIndex < section.items.length - 1) {
+                Divider()
+                  .strokeWidth(1)
+                  .color($r('sys.color.comp_background_tertiary'))
+                  .margin({ left: 6, right: 6 })
+              }
+            }, (item: object, itemIndex: number) => `${sectionIndex}_${itemIndex}`)
+          }
+          .width('100%')
+          .backgroundColor($r('sys.color.comp_background_list_card'))
+          .borderRadius(this.cardRadius)
+          .padding({ left: 6, right: 6,top: 6, bottom: 6 })
+          .clip(true)
+        }
+      }, (section: ListGroupSection, sectionIndex: number) => `${sectionIndex}`)
+    }
+    .width('100%')
+    .height('100%')
+    .padding({ left: 16, right: 16 })
+    .clip(false)
+    .edgeEffect(EdgeEffect.Spring)
   }
 }
 
@@ -41,28 +76,28 @@ export struct SwitchItem {
   };
 
   build() {
-    Column() {
-      HdsListItemCard({
-        textItem: {
-          primaryText: {
-            text: this.title
-          }, description: {
-            text: this.summary,
-            modifier: this.maxLines
-              ? new TextModifier()
-                .fontColor($r('sys.color.ohos_id_color_text_secondary'))
-                .maxLines(this.maxLines)
-                .textOverflow({ overflow: TextOverflow.Ellipsis })
-              : undefined
-          }
-        }, suffixItem: new SuffixSwitch({
-          isCheck: this.checked, onChange: (isCheck: boolean) => {
-            this.onChange(isCheck);
-          }
-        }),
-      })
-      Blank().height(12)
-    }
+    HdsListItemCard({
+      textItem: {
+        primaryText: {
+          text: this.title
+        }, description: {
+          text: this.summary,
+          modifier: this.maxLines
+            ? new TextModifier()
+              .fontColor($r('sys.color.ohos_id_color_text_secondary'))
+              .maxLines(this.maxLines)
+              .textOverflow({ overflow: TextOverflow.Ellipsis })
+            : undefined
+        }
+      }, suffixItem: new SuffixSwitch({
+        isCheck: this.checked, onChange: (isCheck: boolean) => {
+          this.onChange(isCheck);
+        }
+      }),
+      cardPrefixMargin: 0,
+      cardSuffixMargin: 0,
+      cardBackgroundColor: $r('sys.color.ohos_id_color_background_transparent')
+    })
   }
 }
 
@@ -76,28 +111,28 @@ export struct NavigationItem {
   };
 
   build() {
-    Column() {
-      HdsListItemCard({
-        textItem: {
-          primaryText: {
-            text: this.title
-          }, description: {
-            text: this.summary,
-            modifier: this.maxLines
-              ? new TextModifier()
-                .fontColor($r('sys.color.ohos_id_color_text_secondary'))
-                .maxLines(this.maxLines)
-                .textOverflow({ overflow: TextOverflow.Ellipsis })
-              : undefined
-          }
-        },
-        suffixItem: this.showArrow ? new SuffixArrow({ color: $r('sys.color.ohos_id_color_text_secondary') }) :
-          undefined,
-        onClick: () => {
-          this.onNavClick();
+    HdsListItemCard({
+      textItem: {
+        primaryText: {
+          text: this.title
+        }, description: {
+          text: this.summary,
+          modifier: this.maxLines
+            ? new TextModifier()
+              .fontColor($r('sys.color.ohos_id_color_text_secondary'))
+              .maxLines(this.maxLines)
+              .textOverflow({ overflow: TextOverflow.Ellipsis })
+            : undefined
         }
-      })
-      Blank().height(12)
-    }
+      },
+      suffixItem: this.showArrow ? new SuffixArrow({ color: $r('sys.color.ohos_id_color_text_secondary') }) :
+        undefined,
+      cardPrefixMargin: 0,
+      cardSuffixMargin: 0,
+      cardBackgroundColor: $r('sys.color.ohos_id_color_background_transparent'),
+      onClick: () => {
+        this.onNavClick();
+      }
+    })
   }
 }
