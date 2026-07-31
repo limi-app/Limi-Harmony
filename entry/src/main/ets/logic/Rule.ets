@@ -1,29 +1,30 @@
 import { RuleConfig } from '../data/rules/RuleConfig';
-import { processCommonParams } from './rules/common/CommonParams';
 import { processUTMParams } from './rules/common/UTMParams';
 import { processUTMParamsEnhanced } from './rules/common/UTMParamsEnhanced';
 import { getBilibiliRedirectTargetHost, processBilibiliRedirectUrl } from './rules/bilibili/BilibiliRedirects';
 import { isBilibiliNoParamsTarget, processBilibiliNoParamsUrl } from './rules/bilibili/BilibiliNoParams';
 import { getXNoParamsTargetHost, processXNoParamsUrl } from './rules/x/XNoParams';
+import { getCachedQueryStripping } from './rules/cloud/CloudRuleRepository';
+import { processQueryStripping } from './rules/cloud/QueryStripping';
 import { extractUrlList, ParsedUrl, parseUrl } from '../utils/LinkExtractor';
 import { PreferencesHelper } from '../utils/PreferencesHelper';
 
 export class RuleIds {
   static readonly BILIBILI: string = 'bilibili_rules';
-  static readonly COMMON_PARAMS: string = 'common_params_rules';
   static readonly UTM_PARAMS: string = 'utm_params_rules';
   static readonly UTM_PARAMS_ENHANCED: string = 'utm_params_enhanced_rules';
   static readonly X: string = 'x_rules';
+  static readonly FIREFOX_QUERY_STRIPPING: string = 'firefox_query_stripping_rules';
   static readonly INCOGNITO_MODE: string = 'incognito_mode';
 }
 
 export async function processUrl(urlString: string): Promise<string> {
   const ruleConfig = new RuleConfig();
-  ruleConfig.commonParams = PreferencesHelper.getBoolean(RuleIds.COMMON_PARAMS, true);
   ruleConfig.UTMParams = PreferencesHelper.getBoolean(RuleIds.UTM_PARAMS, true);
   ruleConfig.UTMParamsEnhanced = PreferencesHelper.getBoolean(RuleIds.UTM_PARAMS_ENHANCED, false);
   ruleConfig.bilibili = PreferencesHelper.getBoolean(RuleIds.BILIBILI, true);
   ruleConfig.x = PreferencesHelper.getBoolean(RuleIds.X, true);
+  ruleConfig.firefoxQueryStripping = PreferencesHelper.getBoolean(RuleIds.FIREFOX_QUERY_STRIPPING, false);
 
   let finalUrl = urlString;
 
@@ -40,14 +41,17 @@ export async function processUrl(urlString: string): Promise<string> {
     }
   }
 
-  if (ruleConfig.commonParams) {
-    finalUrl = processCommonParams(finalUrl);
-  }
   if (ruleConfig.UTMParams) {
     finalUrl = processUTMParams(finalUrl);
   }
   if (ruleConfig.UTMParamsEnhanced) {
     finalUrl = processUTMParamsEnhanced(finalUrl);
+  }
+  if (ruleConfig.firefoxQueryStripping) {
+    const cloudData = getCachedQueryStripping();
+    if (cloudData.stripList.length > 0) {
+      finalUrl = processQueryStripping(finalUrl, cloudData.stripList, cloudData.allowList);
+    }
   }
 
   if (finalUrl.length === 0) {

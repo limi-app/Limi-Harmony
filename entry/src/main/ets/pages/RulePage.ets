@@ -1,11 +1,13 @@
 import { RuleIds } from '../logic/Rule';
 import { PreferencesHelper } from '../utils/PreferencesHelper';
 import { ListGroupSection, PreferenceGroup, PreferenceItem, SwitchItem } from '../components/PreferenceGroup';
+import { formatTimestamp } from '../utils/DateUtils';
+import { spacingText } from 'pangu_cjk';
 
 export enum RuleId {
-  COMMON_PARAMS = 'common_params',
   UTM_PARAMS = 'utm_params',
   UTM_ENHANCED = 'utm_enhanced',
+  FIREFOX_QUERY_STRIPPING = 'firefox_query_stripping',
   BILIBILI = 'bilibili',
   X = 'x',
 }
@@ -20,19 +22,16 @@ export interface RuleItem extends PreferenceItem {
 @ComponentV2
 export struct RulePage {
   @Local ruleStates: Map<RuleId, boolean> = new Map<RuleId, boolean>([
-    [RuleId.COMMON_PARAMS, true],
     [RuleId.UTM_PARAMS, true],
     [RuleId.UTM_ENHANCED, false],
+    [RuleId.FIREFOX_QUERY_STRIPPING, false],
     [RuleId.BILIBILI, true],
     [RuleId.X, true],
   ]);
-  private readonly commonRuleItems: RuleItem[] = [
-    {
-      id: RuleId.COMMON_PARAMS,
-      title: $r('app.string.common_params_rule'),
-      summary: $r('app.string.common_params_rule_desc'),
-      prefKey: RuleIds.COMMON_PARAMS,
-    },
+  @Param cloudVersionTime: number = 0;
+  @Event onFirefoxRuleEnabledChange: (value: boolean) => void = () => {
+  };
+  private readonly localRuleItems: RuleItem[] = [
     {
       id: RuleId.UTM_PARAMS,
       title: $r('app.string.utm_rule'),
@@ -44,6 +43,14 @@ export struct RulePage {
       title: $r('app.string.utm_enhanced_rule'),
       summary: $r('app.string.utm_enhanced_rule_desc'),
       prefKey: RuleIds.UTM_PARAMS_ENHANCED,
+    },
+  ];
+  private readonly cloudRuleItems: RuleItem[] = [
+    {
+      id: RuleId.FIREFOX_QUERY_STRIPPING,
+      title: $r('app.string.firefox_query_stripping_rule'),
+      summary: $r('app.string.cloud_rules_not_synced'),
+      prefKey: RuleIds.FIREFOX_QUERY_STRIPPING,
     },
   ];
   private readonly exceptionalRuleItems: RuleItem[] = [
@@ -63,9 +70,9 @@ export struct RulePage {
 
   async aboutToAppear(): Promise<void> {
     this.ruleStates = new Map<RuleId, boolean>([
-      [RuleId.COMMON_PARAMS, PreferencesHelper.getBoolean(RuleIds.COMMON_PARAMS, true)],
       [RuleId.UTM_PARAMS, PreferencesHelper.getBoolean(RuleIds.UTM_PARAMS, true)],
       [RuleId.UTM_ENHANCED, PreferencesHelper.getBoolean(RuleIds.UTM_PARAMS_ENHANCED, false)],
+      [RuleId.FIREFOX_QUERY_STRIPPING, PreferencesHelper.getBoolean(RuleIds.FIREFOX_QUERY_STRIPPING, false)],
       [RuleId.BILIBILI, PreferencesHelper.getBoolean(RuleIds.BILIBILI, true)],
       [RuleId.X, PreferencesHelper.getBoolean(RuleIds.X, true)],
     ]);
@@ -81,11 +88,25 @@ export struct RulePage {
     next.set(id, value);
     this.ruleStates = next;
     PreferencesHelper.setBoolean(prefKey, value);
+    if (id === RuleId.FIREFOX_QUERY_STRIPPING) {
+      this.onFirefoxRuleEnabledChange(value);
+    }
+  }
+
+  getRuleItemSummary(item: RuleItem): string | Resource {
+    if (item.id === RuleId.FIREFOX_QUERY_STRIPPING) {
+      if (this.cloudVersionTime > 0) {
+        return $r('app.string.cloud_rules_version', spacingText(formatTimestamp(this.cloudVersionTime)));
+      }
+      return $r('app.string.cloud_rules_not_synced');
+    }
+    return item.summary;
   }
 
   getRuleSections(): ListGroupSection[] {
     return [
-      new ListGroupSection($r('app.string.common_rules_group'), this.commonRuleItems),
+      new ListGroupSection($r('app.string.local_rules_group'), this.localRuleItems),
+      new ListGroupSection($r('app.string.cloud_rules_group'), this.cloudRuleItems),
       new ListGroupSection($r('app.string.exceptional_rules_group'), this.exceptionalRuleItems),
     ];
   }
@@ -94,7 +115,7 @@ export struct RulePage {
   renderRuleItem(item: PreferenceItem, index: number) {
     SwitchItem({
       title: (item as RuleItem).title,
-      summary: (item as RuleItem).summary,
+      summary: this.getRuleItemSummary(item as RuleItem),
       checked: this.isRuleEnabled((item as RuleItem).id),
       onChange: (value: boolean) => {
         this.setRuleEnabled((item as RuleItem).id, (item as RuleItem).prefKey, value);

@@ -65,6 +65,7 @@ struct HistoryDetail {
             Text(spacingText(formatDatetime(this.datetime)))
               .fontSize(16)
               .fontColor($r('sys.color.ohos_id_color_text_primary'))
+              .copyOption(CopyOptions.LocalDevice)
               .width('100%')
               .padding({ bottom: 12 })
           }.width('100%').padding(16).alignItems(HorizontalAlign.Start)

@@ -125,20 +125,40 @@
       "value": "Remove all url parameters that start with \"utm_\""
     },
     {
-      "name": "common_params_rule",
-      "value": "Common Parameters"
+      "name": "local_rules_group",
+      "value": "Local Rules"
     },
     {
-      "name": "common_params_rule_desc",
-      "value": "Remove common url parameters"
-    },
-    {
-      "name": "common_rules_group",
-      "value": "Common Rules"
+      "name": "cloud_rules_group",
+      "value": "Cloud Rules"
     },
     {
       "name": "exceptional_rules_group",
       "value": "Exceptional Rules"
+    },
+    {
+      "name": "firefox_query_stripping_rule",
+      "value": "Firefox Query Parameter Stripping"
+    },
+    {
+      "name": "sync_rules",
+      "value": "Sync Rules"
+    },
+    {
+      "name": "sync_rules_failed_title",
+      "value": "Sync Failed"
+    },
+    {
+      "name": "sync_rules_failed_message",
+      "value": "Failed to sync cloud rules. Check your network connection and try again."
+    },
+    {
+      "name": "cloud_rules_not_synced",
+      "value": "Not synced"
+    },
+    {
+      "name": "cloud_rules_version",
+      "value": "Current version: %s"
     },
     {
       "name": "no_history",

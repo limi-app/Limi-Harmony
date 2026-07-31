@@ -1,8 +1,32 @@
 import { http } from '@kit.NetworkKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
+import { BusinessError } from '@kit.BasicServicesKit';
 
 const TAG = 'HttpUtil';
 const DOMAIN = 0x0000;
+
+export async function fetchText(url: string): Promise<string> {
+  const httpRequest = http.createHttp();
+  try {
+    const response = await httpRequest.request(url, {
+      method: http.RequestMethod.GET,
+      expectDataType: http.HttpDataType.STRING,
+      connectTimeout: 10000,
+      readTimeout: 10000,
+    });
+    const code = response.responseCode;
+    if (code < 200 || code >= 300) {
+      throw new Error(`Unexpected response code: ${code}`);
+    }
+    return response.result as string;
+  } catch (e) {
+    const err = e as BusinessError;
+    hilog.error(DOMAIN, TAG, `fetchText failed: code=${err.code}, message=${err.message}`);
+    throw new Error(err.message ?? `HTTP request failed (code ${err.code})`);
+  } finally {
+    httpRequest.destroy();
+  }
+}
 
 export async function getRedirectsUrl(url: string): Promise<string> {
   const httpRequest = http.createHttp();
