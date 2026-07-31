@@ -87,6 +87,7 @@ export struct PreferenceGroup {
       right: 16
     })
     .clip(false)
+    .cachedCount(4, true)
     .edgeEffect(EdgeEffect.Spring)
   }
 }
