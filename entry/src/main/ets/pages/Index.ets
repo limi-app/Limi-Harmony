@@ -1,10 +1,4 @@
-import {
-  hdsMaterial,
-  HdsNavigation,
-  HdsNavigationTitleMode,
-  HdsTabs,
-  HdsTabsController
-} from '@kit.UIDesignKit';
+import { hdsMaterial, HdsNavigation, HdsNavigationTitleMode, HdsTabs, HdsTabsController } from '@kit.UIDesignKit';
 import { SymbolGlyphModifier } from '@kit.ArkUI';
 import { RulePage } from './RulePage';
 import { spacingText } from 'pangu_cjk';
@@ -14,7 +8,7 @@ import { PreferencesHelper } from '../utils/PreferencesHelper';
 import { LimiHistory } from '../data/model/LimiHistory';
 import { processLinksInText } from '../logic/Rule';
 import { HistoryDetailParams } from '../data/model/RouteParams';
-import { NavigationItem, PreferenceGroup } from '../components/PreferenceGroup';
+import { ListGroupSection, NavigationItem, PreferenceGroup, PreferenceItem } from '../components/PreferenceGroup';
 import { ProcessPanel } from '../components/ProcessPanel';
 import { buildTitleBarOpts, getMaterialLevel } from '../components/TitleBarBuilder';
 import { formatDate, formatTime } from '../utils/DateUtils';
@@ -38,8 +32,8 @@ const MENU_CONFIG: MenuItem[] = [{
   symbolGlyph1: new SymbolGlyphModifier($r('sys.symbol.house_fill')),
   label: $r('app.string.home'),
 }, {
-  symbolGlyph: new SymbolGlyphModifier($r('sys.symbol.list_bullet')),
-  symbolGlyph1: new SymbolGlyphModifier($r('sys.symbol.list_bullet')),
+  symbolGlyph: new SymbolGlyphModifier($r('sys.symbol.list_bullet_square')),
+  symbolGlyph1: new SymbolGlyphModifier($r('sys.symbol.list_bullet_square_fill')),
   label: $r('app.string.rule'),
 }, {
   symbolGlyph: new SymbolGlyphModifier($r('sys.symbol.gearshape')),
@@ -161,30 +155,11 @@ struct Index {
         Text($r('app.string.no_history')).fontSize(14).fontColor($r('sys.color.ohos_id_color_text_hint'))
       }.width('100%').height('100%').justifyContent(FlexAlign.Center).alignItems(HorizontalAlign.Center)
     } else {
-      List({ space: 0 }) {
-        ForEach(this.getGroupedHistory(), (group: HistoryGroup) => {
-          ListItem() {
-            PreferenceGroup({ title: spacingText(group.date) }) {
-              ForEach(group.items, (item: LimiHistory) => {
-                NavigationItem({
-                  maxLines: 3,
-                  title: formatTime(item.datetime),
-                  summary: item.processedUrl,
-                  onNavClick: () => {
-                    const params: HistoryDetailParams = {
-                      historyId: item.id,
-                      originUrl: item.originUrl,
-                      processedUrl: item.processedUrl,
-                      datetime: item.datetime,
-                    };
-                    this.getUIContext().getRouter().pushUrl({ url: 'pages/HistoryDetail', params: params });
-                  }
-                })
-              }, (item: LimiHistory) => item.id.toString())
-            }
-          }
-        }, (group: HistoryGroup) => `${group.date}_${group.items.length}`)
-      }.width('100%').height('100%').clip(false).edgeEffect(EdgeEffect.Spring)
+      PreferenceGroup({
+        sections: this.getHistorySections(), itemContent: (item: PreferenceItem, index: number) => {
+          this.renderHistoryItem(item, index);
+        },
+      })
     }
   }
 
@@ -198,17 +173,20 @@ struct Index {
     .justifyContent(FlexAlign.Center)
     .alignItems(VerticalAlign.Center)
     .bindMenu([{
-      value: $r('app.string.from_text'), icon: $r('sys.symbol.text_alignleft'), action: () => {
+      value: $r('app.string.from_text'),
+      symbolIcon: new SymbolGlyphModifier($r('sys.symbol.pencil_line')),
+      action: () => {
         this.openTextSheet();
       }
     }, {
-      value: $r('app.string.scan_qrcode'), icon: $r('sys.symbol.qrcode'), action: () => {
+      value: $r('app.string.scan_qrcode'),
+      symbolIcon: new SymbolGlyphModifier($r('sys.symbol.line_viewfinder')),
+      action: () => {
         this.startScan();
       }
-    }],
-      {
-        placement: Placement.BottomRight
-      })
+    }], {
+      placement: Placement.BottomRight
+    })
   }
 
   openTextSheet(): void {
@@ -332,6 +310,40 @@ struct Index {
         console.info(`showToast failed: ${err}`);
       }
     }
+  }
+
+  getHistorySections(): ListGroupSection[] {
+    const groups = this.getGroupedHistory();
+    const sections: ListGroupSection[] = [];
+    for (let i = 0; i < groups.length; i++) {
+      sections.push(new ListGroupSection(spacingText(groups[i].date), groups[i].items));
+    }
+    return sections;
+  }
+
+  @Builder
+  renderHistoryItem(item: PreferenceItem, index: number) {
+    NavigationItem({
+      maxLines: 3,
+      title: formatTime((item as LimiHistory).datetime),
+      summary: (item as LimiHistory).processedUrl,
+      onNavClick: () => {
+        this.openHistory(item as LimiHistory);
+      },
+    })
+  }
+
+  openHistory(item: LimiHistory): void {
+    const params: HistoryDetailParams = {
+      historyId: item.id,
+      originUrl: item.originUrl,
+      processedUrl: item.processedUrl,
+      datetime: item.datetime,
+    };
+    this.getUIContext().getRouter().pushUrl({ url: 'pages/HistoryDetail', params: params })
+      .catch((err: BusinessError) => {
+        hilog.error(0x0001, 'Index', `pushUrl failed: ${err.code} ${err.message}`);
+      });
   }
 
   getGroupedHistory(): HistoryGroup[] {
