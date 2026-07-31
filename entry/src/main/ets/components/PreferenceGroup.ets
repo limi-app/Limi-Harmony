@@ -93,17 +93,24 @@ export struct SwitchItem {
   @Event onChange: (value: boolean) => void = () => {
   };
 
+  hasSummary(): boolean {
+    if (typeof this.summary === 'string') {
+      return this.summary.length > 0;
+    }
+    return true;
+  }
+
   build() {
     HdsListItemCard({
       textItem: {
         primaryText: {
           text: this.title
-        }, description: {
+        }, description: this.hasSummary() ? {
           text: this.summary,
           modifier: this.maxLines ? new TextModifier().fontColor($r('sys.color.ohos_id_color_text_secondary'))
             .maxLines(this.maxLines)
             .textOverflow({ overflow: TextOverflow.Ellipsis }) : undefined
-        }
+        } : undefined
       },
       suffixItem: new SuffixSwitch({
         isCheck: this.checked, onChange: (isCheck: boolean) => {
@@ -126,17 +133,24 @@ export struct NavigationItem {
   @Event onNavClick: () => void = () => {
   };
 
+  hasSummary(): boolean {
+    if (typeof this.summary === 'string') {
+      return this.summary.length > 0;
+    }
+    return true;
+  }
+
   build() {
     HdsListItemCard({
       textItem: {
         primaryText: {
           text: this.title
-        }, description: {
+        }, description: this.hasSummary() ? {
           text: this.summary,
           modifier: this.maxLines ? new TextModifier().fontColor($r('sys.color.ohos_id_color_text_secondary'))
             .maxLines(this.maxLines)
             .textOverflow({ overflow: TextOverflow.Ellipsis }) : undefined
-        }
+        } : undefined
       },
       suffixItem: this.showArrow ? new SuffixArrow({ color: $r('sys.color.ohos_id_color_text_secondary') }) : undefined,
       cardPrefixMargin: 0,

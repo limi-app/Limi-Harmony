@@ -44,7 +44,7 @@ export struct SettingPage {
           PreferencesHelper.setBoolean(RuleIds.INCOGNITO_MODE, value);
         },
       })
-    } else {
+    } else if ((item as SettingItem).kind === SettingKind.ABOUT_LIMI) {
       NavigationItem({
         title: $r('app.string.about_limi'),
         summary: $r('app.string.version_label', this.appVersion),
