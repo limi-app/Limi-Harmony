@@ -8,7 +8,7 @@ import { PreferencesHelper } from '../utils/PreferencesHelper';
 import { LimiHistory } from '../data/model/LimiHistory';
 import { processLinksInText } from '../logic/Rule';
 import { HistoryDetailParams } from '../data/model/RouteParams';
-import { ListGroupSection, NavigationItem, PreferenceGroup } from '../components/PreferenceGroup';
+import { ListGroupSection, NavigationItem, PreferenceGroup, PreferenceItem } from '../components/PreferenceGroup';
 import { ProcessPanel } from '../components/ProcessPanel';
 import { buildTitleBarOpts, getMaterialLevel } from '../components/TitleBarBuilder';
 import { formatDate, formatTime } from '../utils/DateUtils';
@@ -156,7 +156,7 @@ struct Index {
       }.width('100%').height('100%').justifyContent(FlexAlign.Center).alignItems(HorizontalAlign.Center)
     } else {
       PreferenceGroup({
-        sections: this.getHistorySections(), itemContent: (item: object, index: number) => {
+        sections: this.getHistorySections(), itemContent: (item: PreferenceItem, index: number) => {
           this.renderHistoryItem(item, index);
         },
       })
@@ -316,16 +316,13 @@ struct Index {
     const groups = this.getGroupedHistory();
     const sections: ListGroupSection[] = [];
     for (let i = 0; i < groups.length; i++) {
-      const section = new ListGroupSection();
-      section.title = spacingText(groups[i].date);
-      section.items = groups[i].items;
-      sections.push(section);
+      sections.push(new ListGroupSection(spacingText(groups[i].date), groups[i].items));
     }
     return sections;
   }
 
   @Builder
-  renderHistoryItem(item: object, index: number) {
+  renderHistoryItem(item: PreferenceItem, index: number) {
     NavigationItem({
       maxLines: 3,
       title: formatTime((item as LimiHistory).datetime),

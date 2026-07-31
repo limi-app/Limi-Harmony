@@ -1,10 +1,15 @@
 import { RuleIds } from '../logic/Rule';
 import { PreferencesHelper } from '../utils/PreferencesHelper';
-import { ListGroupSection, NavigationItem, PreferenceGroup, SwitchItem } from '../components/PreferenceGroup';
+import { ListGroupSection, NavigationItem, PreferenceGroup, PreferenceItem, SwitchItem } from '../components/PreferenceGroup';
 import { bundleManager } from '@kit.AbilityKit';
 
-export class SettingItem {
-  kind: string = '';
+export enum SettingKind {
+  INCOGNITO = 'incognito',
+  ABOUT_LIMI = 'about_limi',
+}
+
+export class SettingItem implements PreferenceItem {
+  kind: SettingKind = SettingKind.INCOGNITO;
 }
 
 @ComponentV2
@@ -19,20 +24,17 @@ export struct SettingPage {
   }
 
   getSettingSections(): ListGroupSection[] {
-    const generalItems: SettingItem[] = [{ kind: 'incognito' }];
-    const aboutItems: SettingItem[] = [{ kind: 'about_limi' }];
-    const general = new ListGroupSection();
-    general.title = $r('app.string.general');
-    general.items = generalItems;
-    const about = new ListGroupSection();
-    about.title = $r('app.string.about');
-    about.items = aboutItems;
-    return [general, about];
+    const generalItems: SettingItem[] = [{ kind: SettingKind.INCOGNITO }];
+    const aboutItems: SettingItem[] = [{ kind: SettingKind.ABOUT_LIMI }];
+    return [
+      new ListGroupSection($r('app.string.general'), generalItems),
+      new ListGroupSection($r('app.string.about'), aboutItems),
+    ];
   }
 
   @Builder
-  renderSettingItem(item: object, index: number) {
-    if ((item as SettingItem).kind === 'incognito') {
+  renderSettingItem(item: PreferenceItem, index: number) {
+    if ((item as SettingItem).kind === SettingKind.INCOGNITO) {
       SwitchItem({
         title: $r('app.string.incognito_mode'),
         summary: $r('app.string.incognito_mode_desc'),
@@ -56,7 +58,7 @@ export struct SettingPage {
   build() {
     PreferenceGroup({
       sections: this.getSettingSections(),
-      itemContent: (item: object, index: number) => {
+      itemContent: (item: PreferenceItem, index: number) => {
         this.renderSettingItem(item, index);
       },
     })

@@ -1,4 +1,6 @@
-export class LimiHistory {
+import { PreferenceItem } from '../../components/PreferenceGroup';
+
+export class LimiHistory implements PreferenceItem {
   id: number = 0;
   originUrl: string = '';
   processedUrl: string = '';

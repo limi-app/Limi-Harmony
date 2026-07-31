@@ -1,9 +1,20 @@
 import { HdsListItemCard, SuffixArrow, SuffixSwitch } from '@kit.UIDesignKit';
 import { TextModifier } from '@kit.ArkUI';
 
+/**
+ * 标记接口：所有可被 PreferenceGroup 渲染的列表项类型应实现此接口。
+ */
+export interface PreferenceItem {
+}
+
 export class ListGroupSection {
   title: string | Resource = '';
-  items: object[] = [];
+  items: PreferenceItem[] = [];
+
+  constructor(title: string | Resource = '', items: PreferenceItem[] = []) {
+    this.title = title;
+    this.items = items;
+  }
 }
 
 @ComponentV2
@@ -11,10 +22,10 @@ export struct PreferenceGroup {
   @Param sections: ListGroupSection[] = [];
   @Param space: number = 12;
   @Param cardRadius: number = 21;
-  @BuilderParam itemContent: (item: object, index: number) => void = this.defaultItemContent;
+  @BuilderParam itemContent: (item: PreferenceItem, index: number) => void = this.defaultItemContent;
 
   @Builder
-  defaultItemContent(item: object, index: number) {
+  defaultItemContent(item: PreferenceItem, index: number) {
   }
 
   hasTitle(section: ListGroupSection): boolean {
@@ -38,7 +49,7 @@ export struct PreferenceGroup {
         }
         ListItem() {
           Column() {
-            ForEach(section.items, (item: object, itemIndex: number) => {
+            ForEach(section.items, (item: PreferenceItem, itemIndex: number) => {
               Column() {
                 this.itemContent(item, itemIndex)
               }.width('100%')
@@ -46,7 +57,7 @@ export struct PreferenceGroup {
               if (itemIndex < section.items.length - 1) {
                 Divider().strokeWidth(1).color($r('sys.color.comp_background_tertiary')).margin({ left: 9, right: 9 })
               }
-            }, (item: object, itemIndex: number) => `${sectionIndex}_${itemIndex}`)
+            }, (item: PreferenceItem, itemIndex: number) => `${sectionIndex}_${itemIndex}`)
           }
           .width('100%')
           .backgroundColor($r('sys.color.comp_background_list_card'))
