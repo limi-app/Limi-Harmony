@@ -198,11 +198,11 @@ struct Index {
     .justifyContent(FlexAlign.Center)
     .alignItems(VerticalAlign.Center)
     .bindMenu([{
-      value: $r('app.string.from_text'), icon: $r('sys.symbol.text_alignleft'), action: () => {
+      value: $r('app.string.from_text'), symbolIcon: new SymbolGlyphModifier($r('sys.symbol.pencil_line')), action: () => {
         this.openTextSheet();
       }
     }, {
-      value: $r('app.string.scan_qrcode'), icon: $r('sys.symbol.qrcode'), action: () => {
+      value: $r('app.string.scan_qrcode'), symbolIcon: new SymbolGlyphModifier($r('sys.symbol.line_viewfinder')), action: () => {
         this.startScan();
       }
     }],
