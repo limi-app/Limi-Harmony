@@ -32,8 +32,8 @@ const MENU_CONFIG: MenuItem[] = [{
   symbolGlyph1: new SymbolGlyphModifier($r('sys.symbol.house_fill')),
   label: $r('app.string.home'),
 }, {
-  symbolGlyph: new SymbolGlyphModifier($r('sys.symbol.list_bullet')),
-  symbolGlyph1: new SymbolGlyphModifier($r('sys.symbol.list_bullet')),
+  symbolGlyph: new SymbolGlyphModifier($r('sys.symbol.list_bullet_square')),
+  symbolGlyph1: new SymbolGlyphModifier($r('sys.symbol.list_bullet_square_fill')),
   label: $r('app.string.rule'),
 }, {
   symbolGlyph: new SymbolGlyphModifier($r('sys.symbol.gearshape')),
@@ -156,8 +156,7 @@ struct Index {
       }.width('100%').height('100%').justifyContent(FlexAlign.Center).alignItems(HorizontalAlign.Center)
     } else {
       PreferenceGroup({
-        sections: this.getHistorySections(),
-        itemContent: (item: object, index: number) => {
+        sections: this.getHistorySections(), itemContent: (item: object, index: number) => {
           this.renderHistoryItem(item, index);
         },
       })
@@ -174,17 +173,20 @@ struct Index {
     .justifyContent(FlexAlign.Center)
     .alignItems(VerticalAlign.Center)
     .bindMenu([{
-      value: $r('app.string.from_text'), symbolIcon: new SymbolGlyphModifier($r('sys.symbol.pencil_line')), action: () => {
+      value: $r('app.string.from_text'),
+      symbolIcon: new SymbolGlyphModifier($r('sys.symbol.pencil_line')),
+      action: () => {
         this.openTextSheet();
       }
     }, {
-      value: $r('app.string.scan_qrcode'), symbolIcon: new SymbolGlyphModifier($r('sys.symbol.line_viewfinder')), action: () => {
+      value: $r('app.string.scan_qrcode'),
+      symbolIcon: new SymbolGlyphModifier($r('sys.symbol.line_viewfinder')),
+      action: () => {
         this.startScan();
       }
-    }],
-      {
-        placement: Placement.BottomRight
-      })
+    }], {
+      placement: Placement.BottomRight
+    })
   }
 
   openTextSheet(): void {

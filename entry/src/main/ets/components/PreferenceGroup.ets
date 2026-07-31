@@ -33,7 +33,7 @@ export struct PreferenceGroup {
               .fontSize(14)
               .fontColor($r('sys.color.ohos_id_color_text_secondary'))
               .fontWeight(FontWeight.Medium)
-              .margin({ top: 12, left: 12 })
+              .margin({ top: 12, left: 14 })
           }
         }
         ListItem() {
@@ -60,10 +60,16 @@ export struct PreferenceGroup {
           .clip(true)
         }
       }, (section: ListGroupSection, sectionIndex: number) => `${sectionIndex}`)
-    }.width('100%').height('100%').padding({
+    }
+    .width('100%')
+    .height('100%')
+    .padding({
       left: 16,
       right: 16
-    }).clip(false).cachedCount(4, true).edgeEffect(EdgeEffect.Spring)
+    })
+    .clip(false)
+    .cachedCount(4, true)
+    .edgeEffect(EdgeEffect.Spring)
   }
 }
 

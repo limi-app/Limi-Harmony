@@ -15,7 +15,6 @@ export struct RulePage {
   @Local utmParamsEnhancedEnabled: boolean = false;
   @Local bilibiliEnabled: boolean = true;
   @Local xEnabled: boolean = true;
-
   private readonly commonRuleItems: RuleItem[] = [
     {
       id: 'common_params',
@@ -33,7 +32,6 @@ export struct RulePage {
       summary: $r('app.string.utm_enhanced_rule_desc')
     },
   ];
-
   private readonly exceptionalRuleItems: RuleItem[] = [
     {
       id: 'bilibili',

@@ -15,22 +15,16 @@ export struct ProcessPanel {
   @Param showShareButton: boolean = false;
   @Local containerWidth: number = 360;
   @Local useAnimation: boolean = false;
-
   @Event onIsEditingChange: (value: boolean) => void = () => {
   };
-
   @Event onEditTextChange: (value: string) => void = () => {
   };
-
   @Event onOriginalTextChange: (value: string) => void = () => {
   };
-
   @Event onConfirm: (text: string) => void = () => {
   };
-
   @Event onCopy: (text: string) => void = () => {
   };
-
   @Event onShare: (text: string) => void = () => {
   };
 
