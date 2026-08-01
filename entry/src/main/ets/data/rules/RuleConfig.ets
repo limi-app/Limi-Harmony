@@ -6,4 +6,5 @@ export class RuleConfig {
   braveCleanUrls: boolean = false;
   braveDebounce: boolean = false;
   braveQueryFilter: boolean = false;
+  clearUrls: boolean = false;
 }

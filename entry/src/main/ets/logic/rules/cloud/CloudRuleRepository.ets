@@ -5,6 +5,7 @@ import { BraveQueryRule } from './brave/QueryRules';
 import { CleanUrlsRuleKeys, decodeCleanUrlsRules } from './brave/CleanUrls';
 import { DebounceRule, DebounceRuleKeys, decodeDebounceRules } from './brave/Debounce';
 import { QueryFilterRuleKeys, decodeQueryFilterRules } from './brave/QueryFilter';
+import { ClearUrlsRuleKeys, ClearUrlsCatalog, decodeClearUrlsRules } from './clearurls/ClearUrls';
 import { contentHash } from './ContentHash';
 
 // Re-export rule keys for convenience
@@ -12,6 +13,7 @@ export { FirefoxRuleKeys } from './firefox/QueryStripping';
 export { CleanUrlsRuleKeys } from './brave/CleanUrls';
 export { DebounceRuleKeys } from './brave/Debounce';
 export { QueryFilterRuleKeys } from './brave/QueryFilter';
+export { ClearUrlsRuleKeys } from './clearurls/ClearUrls';
 
 const FIREFOX_QUERY_STRIPPING_URL: string =
   'https://firefox.settings.services.mozilla.com/v1/buckets/main/collections/query-stripping/records';
@@ -24,6 +26,9 @@ const BRAVE_DEBOUNCE_URL: string =
 
 const BRAVE_QUERY_FILTER_URL: string =
   'https://raw.githubusercontent.com/brave/adblock-lists/master/brave-lists/query-filter.json';
+
+const CLEAR_URLS_DATA_URL: string = 'https://rules1.clearurls.xyz/data.minify.json';
+const CLEAR_URLS_HASH_URL: string = 'https://rules1.clearurls.xyz/rules.minify.hash';
 
 // ── Firefox ──────────────────────────────────────────────────────────
 
@@ -80,4 +85,20 @@ async function syncBraveRule(url: string, rulesKey: string, versionKey: string):
   const validated: Object[] = JSON.parse(body) as Object[]; // 验证 JSON 合法性
   PreferencesHelper.setString(rulesKey, body);
   PreferencesHelper.setString(versionKey, contentHash(body));
+}
+
+// ── ClearURLs.xyz ────────────────────────────────────────────────────
+
+export async function syncClearUrls(): Promise<void> {
+  const data = await fetchText(CLEAR_URLS_DATA_URL);
+  const remoteHash = (await fetchText(CLEAR_URLS_HASH_URL)).trim().toLowerCase();
+  if (contentHash(data) !== remoteHash) {
+    throw new Error('ClearURLs hash mismatch');
+  }
+  PreferencesHelper.setString(ClearUrlsRuleKeys.RULES, data);
+  PreferencesHelper.setString(ClearUrlsRuleKeys.VERSION_HASH, remoteHash);
+}
+
+export function getCachedClearUrlsRules(): ClearUrlsCatalog {
+  return decodeClearUrlsRules(PreferencesHelper.getString(ClearUrlsRuleKeys.RULES, ''));
 }

@@ -15,6 +15,7 @@ export class RuleId {
   static readonly BRAVE_CLEAN_URLS: string = RuleIds.BRAVE_CLEAN_URLS;
   static readonly BRAVE_DEBOUNCE: string = RuleIds.BRAVE_DEBOUNCE;
   static readonly BRAVE_QUERY_FILTER: string = RuleIds.BRAVE_QUERY_FILTER;
+  static readonly CLEAR_URLS: string = RuleIds.CLEAR_URLS;
   static readonly BILIBILI: string = RuleIds.BILIBILI;
 }
 
@@ -33,12 +34,14 @@ export struct RulePage {
     [RuleId.BRAVE_CLEAN_URLS, false],
     [RuleId.BRAVE_DEBOUNCE, false],
     [RuleId.BRAVE_QUERY_FILTER, false],
+    [RuleId.CLEAR_URLS, false],
     [RuleId.BILIBILI, true],
   ]);
   @Param cloudVersionTime: number = 0;
   @Param braveCleanUrlsVersion: string = '';
   @Param braveDebounceVersion: string = '';
   @Param braveQueryFilterVersion: string = '';
+  @Param clearUrlsVersion: string = '';
   @Event onCloudRuleEnabledChange: (id: string, value: boolean) => void = () => {
   };
   private readonly localRuleItems: RuleItem[] = [
@@ -74,6 +77,11 @@ export struct RulePage {
       title: $r('app.string.brave_debounce_rule'),
       summary: $r('app.string.cloud_rules_not_synced'),
     },
+    {
+      id: RuleId.CLEAR_URLS,
+      title: $r('app.string.clear_urls_rule'),
+      summary: $r('app.string.cloud_rules_not_synced'),
+    },
   ];
   private readonly exceptionalRuleItems: RuleItem[] = [
     {
@@ -91,6 +99,7 @@ export struct RulePage {
       [RuleId.BRAVE_CLEAN_URLS, PreferencesHelper.getBoolean(RuleIds.BRAVE_CLEAN_URLS, false)],
       [RuleId.BRAVE_DEBOUNCE, PreferencesHelper.getBoolean(RuleIds.BRAVE_DEBOUNCE, false)],
       [RuleId.BRAVE_QUERY_FILTER, PreferencesHelper.getBoolean(RuleIds.BRAVE_QUERY_FILTER, false)],
+      [RuleId.CLEAR_URLS, PreferencesHelper.getBoolean(RuleIds.CLEAR_URLS, false)],
       [RuleId.BILIBILI, PreferencesHelper.getBoolean(RuleIds.BILIBILI, true)],
     ]);
   }
@@ -108,7 +117,8 @@ export struct RulePage {
     if (id === RuleId.FIREFOX_QUERY_STRIPPING ||
       id === RuleId.BRAVE_CLEAN_URLS ||
       id === RuleId.BRAVE_DEBOUNCE ||
-      id === RuleId.BRAVE_QUERY_FILTER) {
+      id === RuleId.BRAVE_QUERY_FILTER ||
+      id === RuleId.CLEAR_URLS) {
       this.onCloudRuleEnabledChange(id, value);
     }
   }
@@ -133,6 +143,11 @@ export struct RulePage {
     if (item.id === RuleId.BRAVE_QUERY_FILTER) {
       return this.braveQueryFilterVersion.length > 0
         ? $r('app.string.cloud_rules_version', this.braveQueryFilterVersion.substring(0, 8))
+        : $r('app.string.cloud_rules_not_synced');
+    }
+    if (item.id === RuleId.CLEAR_URLS) {
+      return this.clearUrlsVersion.length > 0
+        ? $r('app.string.cloud_rules_version', this.clearUrlsVersion.substring(0, 8))
         : $r('app.string.cloud_rules_not_synced');
     }
     return item.summary;

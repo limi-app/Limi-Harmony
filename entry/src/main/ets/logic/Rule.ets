@@ -8,11 +8,13 @@ import {
   getCachedCleanUrlsRules,
   getCachedDebounceRules,
   getCachedQueryFilterRules,
+  getCachedClearUrlsRules,
 } from './rules/cloud/CloudRuleRepository';
 import { processQueryStripping } from './rules/cloud/firefox/QueryStripping';
 import { processCleanUrls } from './rules/cloud/brave/CleanUrls';
 import { processDebounce } from './rules/cloud/brave/Debounce';
 import { processQueryFilter } from './rules/cloud/brave/QueryFilter';
+import { processClearUrls } from './rules/cloud/clearurls/ClearUrls';
 import { extractUrlList, ParsedUrl, parseUrl } from '../utils/LinkExtractor';
 import { PreferencesHelper } from '../utils/PreferencesHelper';
 
@@ -24,6 +26,7 @@ export class RuleIds {
   static readonly BRAVE_CLEAN_URLS: string = 'brave_clean_urls_rules';
   static readonly BRAVE_DEBOUNCE: string = 'brave_debounce_rules';
   static readonly BRAVE_QUERY_FILTER: string = 'brave_query_filter_rules';
+  static readonly CLEAR_URLS: string = 'clear_urls_rules';
   static readonly INCOGNITO_MODE: string = 'incognito_mode';
 }
 
@@ -36,6 +39,7 @@ export async function processUrl(urlString: string): Promise<string> {
   ruleConfig.braveCleanUrls = PreferencesHelper.getBoolean(RuleIds.BRAVE_CLEAN_URLS, false);
   ruleConfig.braveDebounce = PreferencesHelper.getBoolean(RuleIds.BRAVE_DEBOUNCE, false);
   ruleConfig.braveQueryFilter = PreferencesHelper.getBoolean(RuleIds.BRAVE_QUERY_FILTER, false);
+  ruleConfig.clearUrls = PreferencesHelper.getBoolean(RuleIds.CLEAR_URLS, false);
 
   let finalUrl = urlString;
 
@@ -85,6 +89,12 @@ export async function processUrl(urlString: string): Promise<string> {
     const rules = getCachedQueryFilterRules();
     if (rules.length > 0) {
       finalUrl = processQueryFilter(finalUrl, rules);
+    }
+  }
+  if (ruleConfig.clearUrls) {
+    const catalog = getCachedClearUrlsRules();
+    if (catalog.providers.size > 0) {
+      finalUrl = processClearUrls(finalUrl, catalog);
     }
   }
 
