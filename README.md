@@ -18,13 +18,13 @@
 - 规则来源：https://firefox.settings.services.mozilla.com/v1/buckets/main/collections/query-stripping/records
 - Mozilla Public License 2.0：https://www.mozilla.org/MPL/2.0/
 
-### Brave Browser
+### Brave Adblock Lists
 
 - 规则来源：https://github.com/brave/adblock-lists
-- Mozilla Public License 2.0：https://www.mozilla.org/MPL/2.0/
+- Mozilla Public License 2.0：https://github.com/brave/adblock-lists/blob/master/LICENSE
 
 ### ClearURLs.xyz
 
 - 规则来源：https://rules1.clearurls.xyz/data.minify.json
 - 项目主页：https://clearurls.xyz
-- GNU Lesser General Public License v3.0：https://www.gnu.org/licenses/lgpl-3.0.html
+- GNU Lesser General Public License v3.0：https://gitlab.com/ClearURLs/ClearUrls/-/blob/master/LICENSE
