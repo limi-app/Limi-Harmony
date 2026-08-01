@@ -4,6 +4,7 @@ import {
   ClearUrlsCatalog,
   processClearUrls,
   parseClearUrls,
+  decodeClearUrlsRules,
 } from '../main/ets/logic/rules/cloud/clearurls/ClearUrls';
 
 function makeProvider(
@@ -354,6 +355,15 @@ export default function clearUrlsTest() {
 
     it('emptyCatalogReturnsOriginal', 0, () => {
       const catalog = new ClearUrlsCatalog();
+      const result = processClearUrls('https://example.com/?ref=1', catalog);
+      expect(result).assertEqual('https://example.com/?ref=1');
+    });
+
+    // ── 损坏 JSON 容错 ────────────────────────────────────────────────
+
+    it('malformedJsonReturnsEmptyCatalog', 0, () => {
+      const catalog = decodeClearUrlsRules('{ broken json');
+      expect(catalog.providers.size).assertEqual(0);
       const result = processClearUrls('https://example.com/?ref=1', catalog);
       expect(result).assertEqual('https://example.com/?ref=1');
     });

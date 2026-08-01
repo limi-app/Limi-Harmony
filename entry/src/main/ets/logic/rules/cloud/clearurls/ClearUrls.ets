@@ -108,7 +108,11 @@ export function decodeClearUrlsRules(raw: string): ClearUrlsCatalog {
   if (raw.length === 0) {
     return new ClearUrlsCatalog();
   }
-  return parseClearUrls(raw);
+  try {
+    return parseClearUrls(raw);
+  } catch (e) {
+    return new ClearUrlsCatalog();
+  }
 }
 
 // ── 清洗主入口 ──────────────────────────────────────────────────────────
