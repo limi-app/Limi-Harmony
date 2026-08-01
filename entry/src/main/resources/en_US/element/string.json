@@ -241,6 +241,10 @@
       "value": "Open Source Licenses"
     },
     {
+      "name": "open_source_repo",
+      "value": "Open Source Repository"
+    },
+    {
       "name": "select_from_gallery",
       "value": "Select from Gallery"
     },

@@ -241,6 +241,10 @@
       "value": "开放源代码许可"
     },
     {
+      "name": "open_source_repo",
+      "value": "开源仓库"
+    },
+    {
       "name": "select_from_gallery",
       "value": "从图库选择"
     },

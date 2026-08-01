@@ -1,11 +1,14 @@
 import { RuleIds } from '../logic/Rule';
 import { PreferencesHelper } from '../utils/PreferencesHelper';
 import { ListGroupSection, NavigationItem, PreferenceGroup, PreferenceItem, SwitchItem } from '../components/PreferenceGroup';
-import { bundleManager } from '@kit.AbilityKit';
+import { bundleManager, common } from '@kit.AbilityKit';
+import { BusinessError } from '@kit.BasicServicesKit';
+import { hilog } from '@kit.PerformanceAnalysisKit';
 
 export enum SettingKind {
   INCOGNITO = 'incognito',
   ABOUT_LIMI = 'about_limi',
+  SOURCE_REPO = 'source_repo',
 }
 
 export interface SettingItem extends PreferenceItem {
@@ -25,7 +28,10 @@ export struct SettingPage {
 
   getSettingSections(): ListGroupSection[] {
     const generalItems: SettingItem[] = [{ kind: SettingKind.INCOGNITO }];
-    const aboutItems: SettingItem[] = [{ kind: SettingKind.ABOUT_LIMI }];
+    const aboutItems: SettingItem[] = [
+      { kind: SettingKind.ABOUT_LIMI },
+      { kind: SettingKind.SOURCE_REPO },
+    ];
     return [
       new ListGroupSection($r('app.string.general'), generalItems),
       new ListGroupSection($r('app.string.about'), aboutItems),
@@ -52,6 +58,14 @@ export struct SettingPage {
         onNavClick: () => {
         },
       })
+    } else if ((item as SettingItem).kind === SettingKind.SOURCE_REPO) {
+      NavigationItem({
+        title: $r('app.string.open_source_repo'),
+        summary: "https://github.com/limi-app/Limi-Harmony",
+        onNavClick: () => {
+          this.openSourceRepo();
+        },
+      })
     }
   }
 
@@ -62,5 +76,18 @@ export struct SettingPage {
         this.renderSettingItem(item, index);
       },
     })
+  }
+
+  openSourceRepo(): void {
+    try {
+      const context = this.getUIContext().getHostContext() as common.UIAbilityContext;
+      context.startAbility({
+        action: 'ohos.want.action.viewData',
+        uri: 'https://github.com/limi-app/Limi-Harmony',
+      });
+    } catch (e) {
+      const err = e as BusinessError;
+      hilog.error(0x0001, 'SettingPage', `openSourceRepo failed: code=${err.code}, message=${err.message}`);
+    }
   }
 }
