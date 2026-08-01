@@ -31,13 +31,13 @@ export class RuleIds {
 }
 
 const URL_SCHEME_REGEX: RegExp = /^[a-zA-Z][a-zA-Z0-9+.-]*$/;
-const KNOWN_URL_SCHEMES: string[] = [
-  'http', 'https', 'ftp', 'ftps', 'mailto', 'tel', 'file', 'data', 'about',
-  'ws', 'wss', 'sms', 'ssh', 'git', 'chrome', 'intent',
-];
 
 /**
- * 判断链接是否自带协议头
+ * 判断链接是否自带协议头。
+ * candidate 须符合 RFC 3986 scheme 语法（字母开头，仅含字母数字 +.−）。
+ * 排除 host:port 形式（如 a.com:8080、localhost:3000、intranet:8080）：
+ * - candidate 含 "."（域名形态）
+ * - ":" 后为纯数字（端口号形态）
  */
 export function hasUrlScheme(urlString: string): boolean {
   const colonIndex = urlString.indexOf(':');
@@ -48,7 +48,29 @@ export function hasUrlScheme(urlString: string): boolean {
   if (!URL_SCHEME_REGEX.test(candidate)) {
     return false;
   }
-  return KNOWN_URL_SCHEMES.indexOf(candidate) >= 0 || urlString.startsWith(candidate + '://');
+  // 排除域名形态的 host:port（如 a.com:8080）
+  if (candidate.indexOf('.') >= 0) {
+    return false;
+  }
+  // 排除端口号形态的 host:port（如 localhost:3000、intranet:8080）
+  const afterColon = urlString.substring(colonIndex + 1);
+  if (isDigitsOnly(afterColon)) {
+    return false;
+  }
+  return true;
+}
+
+function isDigitsOnly(s: string): boolean {
+  if (s.length === 0) {
+    return false;
+  }
+  for (let i = 0; i < s.length; i++) {
+    const code = s.charCodeAt(i);
+    if (code < 48 || code > 57) {
+      return false;
+    }
+  }
+  return true;
 }
 
 /**

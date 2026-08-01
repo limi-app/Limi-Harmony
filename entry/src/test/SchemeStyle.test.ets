@@ -43,6 +43,29 @@ export default function schemeStyleTest() {
       expect(hasUrlScheme('a.com?utm_source=x')).assertFalse();
     });
 
+    it('noSchemeHostWithPort', 0, () => {
+      // host:port 不应被误判为 scheme
+      expect(hasUrlScheme('a.com:8080')).assertFalse();
+      expect(hasUrlScheme('localhost:3000')).assertFalse();
+      expect(hasUrlScheme('intranet:8080')).assertFalse();
+      expect(hasUrlScheme('gitlab:3000')).assertFalse();
+    });
+
+    it('hasSchemeCustomDeepLink', 0, () => {
+      // 自定义深度链接 scheme 应被识别
+      expect(hasUrlScheme('taobao://item.htm?id=1')).assertTrue();
+      expect(hasUrlScheme('myapp:deep/path')).assertTrue();
+      expect(hasUrlScheme('wechat://profile')).assertTrue();
+    });
+
+    it('hasSchemeTel', 0, () => {
+      expect(hasUrlScheme('tel:+8613800138000')).assertTrue();
+    });
+
+    it('hasSchemeData', 0, () => {
+      expect(hasUrlScheme('data:text/plain,hello')).assertTrue();
+    });
+
     // ── ensureUrlScheme ───────────────────────────────────────────────
 
     it('ensureSchemeAddsHttp', 0, () => {
@@ -63,6 +86,15 @@ export default function schemeStyleTest() {
 
     it('ensureSchemeAddsHttpToB23tv', 0, () => {
       expect(ensureUrlScheme('b23.tv/DxrYn0F')).assertEqual('http://b23.tv/DxrYn0F');
+    });
+
+    it('ensureSchemeKeepsCustomDeepLink', 0, () => {
+      expect(ensureUrlScheme('taobao://item.htm?id=1')).assertEqual('taobao://item.htm?id=1');
+      expect(ensureUrlScheme('myapp:deep/path')).assertEqual('myapp:deep/path');
+    });
+
+    it('ensureSchemeKeepsTel', 0, () => {
+      expect(ensureUrlScheme('tel:+8613800138000')).assertEqual('tel:+8613800138000');
     });
 
     // ── applyOriginalSchemeStyle ──────────────────────────────────────
