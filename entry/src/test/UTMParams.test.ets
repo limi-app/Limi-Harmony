@@ -77,5 +77,10 @@ export default function utmParamsTest() {
       expect(params['param1'] !== undefined && params['param1'] !== null).assertTrue();
       expect(params['param1'].length).assertEqual(2);
     });
+
+    it('noTrailingSlashForUrlWithoutPath', 0, () => {
+      expect(processUTMParams('a.com')).assertEqual('a.com');
+      expect(processUTMParams('https://example.com')).assertEqual('https://example.com');
+    });
   });
 }

@@ -190,7 +190,7 @@ export function parseUrl(url: string): ParsedUrl | null {
       protocol: protocol,
       host: host,
       port: port,
-      path: path.length > 0 ? path : '/',
+      path: path,
       query: query,
       fragment: fragment,
     };

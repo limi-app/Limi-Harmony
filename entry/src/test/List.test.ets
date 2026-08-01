@@ -8,6 +8,7 @@ import queryFilterTest from './QueryFilter.test';
 import debounceTest from './Debounce.test';
 import contentHashTest from './ContentHash.test';
 import clearUrlsTest from './ClearUrls.test';
+import schemeStyleTest from './SchemeStyle.test';
 
 export default function testsuite() {
   localUnitTest();
@@ -20,4 +21,5 @@ export default function testsuite() {
   debounceTest();
   contentHashTest();
   clearUrlsTest();
+  schemeStyleTest();
 }

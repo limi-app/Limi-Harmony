@@ -49,11 +49,12 @@ export class UrlPattern {
       }
     }
 
-    // path+query 匹配
+    // path+query 匹配（空 path 归一化为 "/" 以保持 HTTP 语义）
     if (this.pathRegex !== null) {
+      const effectivePath = url.path.length > 0 ? url.path : '/';
       const pathWithQuery = url.query.length > 0
-        ? url.path + '?' + url.query
-        : url.path;
+        ? effectivePath + '?' + url.query
+        : effectivePath;
       if (!this.pathRegex.test(pathWithQuery)) {
         return false;
       }

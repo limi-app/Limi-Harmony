@@ -30,6 +30,47 @@ export class RuleIds {
   static readonly INCOGNITO_MODE: string = 'incognito_mode';
 }
 
+const URL_SCHEME_REGEX: RegExp = /^[a-zA-Z][a-zA-Z0-9+.-]*$/;
+const KNOWN_URL_SCHEMES: string[] = [
+  'http', 'https', 'ftp', 'ftps', 'mailto', 'tel', 'file', 'data', 'about',
+  'ws', 'wss', 'sms', 'ssh', 'git', 'chrome', 'intent',
+];
+
+/**
+ * 判断链接是否自带协议头
+ */
+export function hasUrlScheme(urlString: string): boolean {
+  const colonIndex = urlString.indexOf(':');
+  if (colonIndex <= 0) {
+    return false;
+  }
+  const candidate = urlString.substring(0, colonIndex);
+  if (!URL_SCHEME_REGEX.test(candidate)) {
+    return false;
+  }
+  return KNOWN_URL_SCHEMES.indexOf(candidate) >= 0 || urlString.startsWith(candidate + '://');
+}
+
+/**
+ * 为不带协议的链接补全 http://，确保 HTTP 请求与 URL 解析正常工作
+ */
+export function ensureUrlScheme(urlString: string): string {
+  return hasUrlScheme(urlString) ? urlString : 'http://' + urlString;
+}
+
+/**
+ * 保持用户链接原样式：原链接不带协议头时，去掉补全的 http:// 前缀
+ */
+export function applyOriginalSchemeStyle(result: string, hadScheme: boolean): string {
+  if (hadScheme) {
+    return result;
+  }
+  if (result.startsWith('http://')) {
+    return result.substring('http://'.length);
+  }
+  return result;
+}
+
 export async function processUrl(urlString: string): Promise<string> {
   const ruleConfig = new RuleConfig();
   ruleConfig.UTMParams = PreferencesHelper.getBoolean(RuleIds.UTM_PARAMS, true);
@@ -41,7 +82,8 @@ export async function processUrl(urlString: string): Promise<string> {
   ruleConfig.braveQueryFilter = PreferencesHelper.getBoolean(RuleIds.BRAVE_QUERY_FILTER, false);
   ruleConfig.clearUrls = PreferencesHelper.getBoolean(RuleIds.CLEAR_URLS, false);
 
-  let finalUrl = urlString;
+  const hadScheme = hasUrlScheme(urlString);
+  let finalUrl = ensureUrlScheme(urlString);
 
   // 第一层：去重定向跳转（Brave Debounce）
   if (ruleConfig.braveDebounce) {
@@ -101,7 +143,7 @@ export async function processUrl(urlString: string): Promise<string> {
   if (finalUrl.length === 0) {
     return urlString;
   }
-  return finalUrl;
+  return applyOriginalSchemeStyle(finalUrl, hadScheme);
 }
 
 function isInHostList(host: string, hosts: string[]): boolean {
