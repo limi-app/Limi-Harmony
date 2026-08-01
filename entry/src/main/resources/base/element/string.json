@@ -114,7 +114,7 @@
     },
     {
       "name": "utm_rule_desc",
-      "value": "移除 UTM 标准 Url 参数"
+      "value": "移除 UTM 标准 URL 参数"
     },
     {
       "name": "utm_enhanced_rule",
@@ -122,7 +122,7 @@
     },
     {
       "name": "utm_enhanced_rule_desc",
-      "value": "移除所有以「utm_」开头的 Url 参数"
+      "value": "移除所有以「utm_」开头的 URL 参数"
     },
     {
       "name": "local_rules_group",
@@ -142,7 +142,7 @@
     },
     {
       "name": "brave_clean_urls_rule",
-      "value": "Brave Clean Urls"
+      "value": "Brave Clean URLs"
     },
     {
       "name": "brave_debounce_rule",
@@ -151,6 +151,10 @@
     {
       "name": "brave_query_filter_rule",
       "value": "Brave Query Filter"
+    },
+    {
+      "name": "clear_urls_rule",
+      "value": "ClearURLs.xyz"
     },
     {
       "name": "sync_rules",

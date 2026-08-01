@@ -142,7 +142,7 @@
     },
     {
       "name": "brave_clean_urls_rule",
-      "value": "Brave Clean Urls"
+      "value": "Brave Clean URLs"
     },
     {
       "name": "brave_debounce_rule",
@@ -151,6 +151,10 @@
     {
       "name": "brave_query_filter_rule",
       "value": "Brave Query Filter"
+    },
+    {
+      "name": "clear_urls_rule",
+      "value": "ClearURLs.xyz"
     },
     {
       "name": "sync_rules",

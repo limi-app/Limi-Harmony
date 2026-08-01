@@ -12,5 +12,5 @@
 /.appanalyzer
 
 .cache
-build-profile.json5
+/build-profile.json5
 .DS_Store

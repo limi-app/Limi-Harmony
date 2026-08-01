@@ -12,10 +12,12 @@ import {
   CleanUrlsRuleKeys,
   DebounceRuleKeys,
   QueryFilterRuleKeys,
+  ClearUrlsRuleKeys,
   syncQueryStripping,
   syncCleanUrls,
   syncDebounce,
   syncQueryFilter,
+  syncClearUrls,
 } from '../logic/rules/cloud/CloudRuleRepository';
 import { HistoryDetailParams } from '../data/model/RouteParams';
 import { ListGroupSection, NavigationItem, PreferenceGroup, PreferenceItem } from '../components/PreferenceGroup';
@@ -76,11 +78,13 @@ struct Index {
   @Local isBraveCleanUrlsEnabled: boolean = false;
   @Local isBraveDebounceEnabled: boolean = false;
   @Local isBraveQueryFilterEnabled: boolean = false;
+  @Local isClearUrlsEnabled: boolean = false;
   @Local isSyncing: boolean = false;
   @Local cloudVersionTime: number = 0;
   @Local braveCleanUrlsVersion: string = '';
   @Local braveDebounceVersion: string = '';
   @Local braveQueryFilterVersion: string = '';
+  @Local clearUrlsVersion: string = '';
   @Local syncErrorDetail: string = '';
   private tabController: HdsTabsController = new HdsTabsController();
 
@@ -95,10 +99,12 @@ struct Index {
     this.isBraveCleanUrlsEnabled = PreferencesHelper.getBoolean(RuleIds.BRAVE_CLEAN_URLS, false);
     this.isBraveDebounceEnabled = PreferencesHelper.getBoolean(RuleIds.BRAVE_DEBOUNCE, false);
     this.isBraveQueryFilterEnabled = PreferencesHelper.getBoolean(RuleIds.BRAVE_QUERY_FILTER, false);
+    this.isClearUrlsEnabled = PreferencesHelper.getBoolean(RuleIds.CLEAR_URLS, false);
     this.cloudVersionTime = PreferencesHelper.getLong(FirefoxRuleKeys.QUERY_STRIPPING_LAST_MODIFIED, 0);
     this.braveCleanUrlsVersion = PreferencesHelper.getString(CleanUrlsRuleKeys.VERSION_HASH, '');
     this.braveDebounceVersion = PreferencesHelper.getString(DebounceRuleKeys.VERSION_HASH, '');
     this.braveQueryFilterVersion = PreferencesHelper.getString(QueryFilterRuleKeys.VERSION_HASH, '');
+    this.clearUrlsVersion = PreferencesHelper.getString(ClearUrlsRuleKeys.VERSION_HASH, '');
     HistoryDB.setDataChangedCallback(() => {
       this.loadHistory();
     });
@@ -128,6 +134,7 @@ struct Index {
                   braveCleanUrlsVersion: this.braveCleanUrlsVersion,
                   braveDebounceVersion: this.braveDebounceVersion,
                   braveQueryFilterVersion: this.braveQueryFilterVersion,
+                  clearUrlsVersion: this.clearUrlsVersion,
                   onCloudRuleEnabledChange: (id: string, value: boolean) => {
                     this.onCloudRuleEnabledChange(id, value);
                   }
@@ -442,6 +449,10 @@ struct Index {
         await syncQueryFilter();
         this.braveQueryFilterVersion = PreferencesHelper.getString(QueryFilterRuleKeys.VERSION_HASH, '');
       }
+      if (this.isClearUrlsEnabled) {
+        await syncClearUrls();
+        this.clearUrlsVersion = PreferencesHelper.getString(ClearUrlsRuleKeys.VERSION_HASH, '');
+      }
     } catch (e) {
       const err = e as BusinessError;
       this.syncErrorDetail = err.message ?? '';
@@ -465,6 +476,9 @@ struct Index {
       case RuleId.BRAVE_QUERY_FILTER:
         this.isBraveQueryFilterEnabled = value;
         break;
+      case RuleId.CLEAR_URLS:
+        this.isClearUrlsEnabled = value;
+        break;
       default:
         break;
     }
@@ -472,7 +486,7 @@ struct Index {
 
   isAnyCloudRuleEnabled(): boolean {
     return this.isFirefoxRuleEnabled || this.isBraveCleanUrlsEnabled ||
-      this.isBraveDebounceEnabled || this.isBraveQueryFilterEnabled;
+      this.isBraveDebounceEnabled || this.isBraveQueryFilterEnabled || this.isClearUrlsEnabled;
   }
 
   showSyncErrorDialog(): void {

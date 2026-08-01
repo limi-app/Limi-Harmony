@@ -2,7 +2,7 @@
   "modelVersion": "6.1.1",
   "description": "Please describe the basic information.",
   "dependencies": {
-    "pangu_cjk": "^0.0.2"
+    "pangu_cjk": "^0.0.3"
   },
   "devDependencies": {
     "@ohos/hypium": "1.0.25",
