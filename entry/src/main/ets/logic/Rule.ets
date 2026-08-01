@@ -81,11 +81,14 @@ export function ensureUrlScheme(urlString: string): string {
 }
 
 /**
- * 保持用户链接原样式：原链接不带协议头时，去掉补全的 http:// 前缀
+ * 保持用户链接原样式：原链接不带协议头时，去掉补全的 http(s):// 前缀
  */
 export function applyOriginalSchemeStyle(result: string, hadScheme: boolean): string {
   if (hadScheme) {
     return result;
+  }
+  if (result.startsWith('https://')) {
+    return result.substring('https://'.length);
   }
   if (result.startsWith('http://')) {
     return result.substring('http://'.length);

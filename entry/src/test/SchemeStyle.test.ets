@@ -103,9 +103,9 @@ export default function schemeStyleTest() {
       expect(applyOriginalSchemeStyle('http://a.com', false)).assertEqual('a.com');
     });
 
-    it('keepHttpsWhenNoOriginalScheme', 0, () => {
+    it('stripHttpsWhenNoOriginalScheme', 0, () => {
       expect(applyOriginalSchemeStyle('https://www.bilibili.com/video/BV1', false))
-        .assertEqual('https://www.bilibili.com/video/BV1');
+        .assertEqual('www.bilibili.com/video/BV1');
     });
 
     it('keepHttpWhenOriginalHadScheme', 0, () => {
@@ -153,10 +153,10 @@ export default function schemeStyleTest() {
       const ensured = ensureUrlScheme(input);
       expect(ensured).assertEqual('http://b23.tv/DxrYn0F');
       expect(hadScheme).assertFalse();
-      // 重定向目标会是 https://www.bilibili.com/...，不会被去掉协议头
+      // 重定向目标 https://www.bilibili.com/... 也去掉协议头，保持无协议样式
       const redirectTarget = 'https://www.bilibili.com/video/BV1xxx';
       const result = applyOriginalSchemeStyle(redirectTarget, hadScheme);
-      expect(result).assertEqual('https://www.bilibili.com/video/BV1xxx');
+      expect(result).assertEqual('www.bilibili.com/video/BV1xxx');
     });
   });
 }
