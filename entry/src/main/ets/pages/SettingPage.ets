@@ -11,6 +11,8 @@ export enum SettingKind {
   SOURCE_REPO = 'source_repo',
 }
 
+const SOURCE_REPO_URL: string = 'https://github.com/limi-app/Limi-Harmony';
+
 export interface SettingItem extends PreferenceItem {
   kind: SettingKind;
 }
@@ -61,7 +63,7 @@ export struct SettingPage {
     } else if ((item as SettingItem).kind === SettingKind.SOURCE_REPO) {
       NavigationItem({
         title: $r('app.string.open_source_repo'),
-        summary: "https://github.com/limi-app/Limi-Harmony",
+        summary: SOURCE_REPO_URL,
         onNavClick: () => {
           this.openSourceRepo();
         },
@@ -83,7 +85,7 @@ export struct SettingPage {
       const context = this.getUIContext().getHostContext() as common.UIAbilityContext;
       context.startAbility({
         action: 'ohos.want.action.viewData',
-        uri: 'https://github.com/limi-app/Limi-Harmony',
+        uri: SOURCE_REPO_URL,
       });
     } catch (e) {
       const err = e as BusinessError;
