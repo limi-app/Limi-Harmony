@@ -3,7 +3,7 @@
   "description": "Please describe the basic information.",
   "dependencies": {
     "pangu_cjk": "^0.0.3",
-    "osslibraries_ui": "^0.0.3"
+    "osslibraries_ui": "^0.0.6"
   },
   "devDependencies": {
     "@ohos/hamock": "1.0.0",

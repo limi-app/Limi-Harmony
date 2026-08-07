@@ -1,13 +1,15 @@
 {
   "type": "module",
+  "devDependencies": {
+    "osslibraries-hvigor-plugin": "^0.0.6",
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
+  },
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
       "version": "11.18.0",
       "onFail": "download"
     }
-  },
-  "devDependencies": {
-    "osslibraries-hvigor-plugin": "^0.0.3"
   }
 }

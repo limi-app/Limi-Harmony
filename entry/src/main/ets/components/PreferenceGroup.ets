@@ -70,12 +70,7 @@ export struct PreferenceGroup {
           .width('100%')
           .backgroundColor($r('sys.color.comp_background_list_card'))
           .borderRadius(this.cardRadius)
-          .padding({
-            left: 6,
-            right: 6,
-            top: 6,
-            bottom: 6
-          })
+          .padding(6)
           .clip(true)
         }
       }, (section: ListGroupSection, sectionIndex: number) => `${sectionIndex}_${section.items.length}`)
