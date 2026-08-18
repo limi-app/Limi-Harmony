@@ -4,8 +4,7 @@ import { ListGroupSection, NavigationItem, PreferenceGroup, PreferenceItem, Swit
 import { bundleManager, common } from '@kit.AbilityKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
-import 'osslibraries_ui/src/main/ets/pages/OSSLibrariesLicenseListPage';
-import 'osslibraries_ui/src/main/ets/pages/OSSLibrariesLicenseDetailPage';
+import 'osslibraries_ui/src/main/ets/pages/OSSLibrariesLicensePage';
 
 export enum SettingKind {
   INCOGNITO = 'incognito',
@@ -105,6 +104,6 @@ export struct SettingPage {
   }
 
   openOpenSourceLicense(): void {
-    this.getUIContext().getRouter().pushNamedRoute({ name: 'OSSLibrariesLicenseListPage' });
+    this.getUIContext().getRouter().pushNamedRoute({ name: 'OSSLibrariesLicensePage' });
   }
 }
