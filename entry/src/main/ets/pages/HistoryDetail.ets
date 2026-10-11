@@ -74,6 +74,7 @@ struct HistoryDetail {
     }
     .backgroundColor($r('sys.color.background_secondary'))
     .titleMode(HdsNavigationTitleMode.MINI)
+    .mode(NavigationMode.Stack)
     .titleBar(buildTitleBarOpts($r('app.string.history_detail'), this.customMaterialLevel, {
       menu: {
         value: [{

@@ -33,7 +33,7 @@ export function buildTitleBarOpts(
         blurEffectiveEndOffset: LengthMetrics.vp(20)
       },
       systemMaterialEffect: {
-        materialType: hdsMaterial.MaterialType.ADAPTIVE,
+        materialType: getMaterialType(),
         materialLevel: materialLevel
       },
       originalStyle: {
@@ -76,6 +76,14 @@ export function buildTitleBarOpts(
       }
     },
   };
+}
+
+export function getMaterialType(): hdsMaterial.MaterialType {
+  const materialTypes: Array<hdsMaterial.MaterialType> = hdsMaterial.getSystemMaterialTypes();
+  if (materialTypes.indexOf(hdsMaterial.MaterialType.IMMERSIVE) < 0) {
+    return hdsMaterial.MaterialType.ADAPTIVE;
+  }
+  return hdsMaterial.MaterialType.IMMERSIVE;
 }
 
 export function getMaterialLevel(): hdsMaterial.MaterialLevel {

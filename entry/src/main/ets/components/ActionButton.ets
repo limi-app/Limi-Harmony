@@ -1,3 +1,5 @@
+import { glassEffect } from './ImmersiveLight';
+
 @ComponentV2
 export struct ActionButton {
   @Param icon: Resource = $r('sys.symbol.checkmark');
@@ -6,6 +8,10 @@ export struct ActionButton {
   @Param styleMode: ButtonStyleMode = ButtonStyleMode.NORMAL;
   @Event onButtonClick: () => void = () => {
   };
+
+  buttonGlass(): BackgroundEffectOptions | undefined {
+    return this.styleMode === ButtonStyleMode.NORMAL ? glassEffect() : undefined;
+  }
 
   build() {
     if (this.isEnabled) {
@@ -26,6 +32,7 @@ export struct ActionButton {
       .layoutWeight(1)
       .height(40)
       .buttonStyle(this.styleMode)
+      .backgroundEffect(this.buttonGlass())
       .onClick(() => {
         this.onButtonClick();
       })
@@ -49,6 +56,7 @@ export struct ActionButton {
       .layoutWeight(1)
       .height(40)
       .buttonStyle(this.styleMode)
+      .backgroundEffect(this.buttonGlass())
       .stateEffect(false)
       .enabled(false)
     }

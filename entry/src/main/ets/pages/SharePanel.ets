@@ -102,6 +102,7 @@ struct SharePanelPage {
     }
     .backgroundColor($r('sys.color.background_secondary'))
     .titleMode(HdsNavigationTitleMode.MINI)
+    .mode(NavigationMode.Stack)
     .titleBar(buildTitleBarOpts('Limi', this.customMaterialLevel, {
       backIcon: {
         action: (): void => {

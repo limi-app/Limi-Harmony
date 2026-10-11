@@ -22,7 +22,8 @@ import {
 import { HistoryDetailParams } from '../data/model/RouteParams';
 import { ListGroupSection, NavigationItem, PreferenceGroup, PreferenceItem } from '../components/PreferenceGroup';
 import { ProcessPanel } from '../components/ProcessPanel';
-import { buildTitleBarOpts, getMaterialLevel } from '../components/TitleBarBuilder';
+import { buildTitleBarOpts, getMaterialLevel, getMaterialType } from '../components/TitleBarBuilder';
+import { createSheetMaterial, uiMaterialSupported } from '../components/ImmersiveLight';
 import { formatDate, formatTime } from '../utils/DateUtils';
 import { copyToClipboard } from '../utils/ClipboardUtil';
 import { saveHistoryIfEnabled } from '../utils/HistoryUtil';
@@ -154,7 +155,7 @@ struct Index {
         .vertical(false)
         .barFloatingStyle({
           systemMaterialEffect: {
-            materialType: hdsMaterial.MaterialType.ADAPTIVE, materialLevel: this.customMaterialLevel,
+            materialType: getMaterialType(), materialLevel: this.customMaterialLevel,
           }, miniBar: {
             miniBarBuilder: () => this.miniBarBuilder(),
           },
@@ -168,6 +169,7 @@ struct Index {
         .clip(false)
       }
       .titleMode(HdsNavigationTitleMode.MINI)
+      .mode(NavigationMode.Stack)
       .titleBar(buildTitleBarOpts(this.currentPage === 0 ? 'Limi' : MENU_CONFIG[this.currentPage].label,
         this.customMaterialLevel,
         this.currentPage === 1 && this.isAnyCloudRuleEnabled() ? {
@@ -193,6 +195,7 @@ struct Index {
       .bindSheet(this.showInputSheet, this.SheetContent(), {
         height: SheetSize.FIT_CONTENT,
         showClose: true,
+        systemMaterial: uiMaterialSupported() ? createSheetMaterial() : undefined,
         title: { title: $r('app.string.process_link') },
         onDisappear: () => {
           this.showInputSheet = false;

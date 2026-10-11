@@ -1,4 +1,5 @@
 import { ActionButton } from './ActionButton';
+import { glassEffect } from './ImmersiveLight';
 
 @ComponentV2
 export struct ProcessPanel {
@@ -113,6 +114,7 @@ export struct ProcessPanel {
       .width('100%')
       .padding(12)
       .backgroundColor($r('sys.color.ohos_id_color_button_normal'))
+      .backgroundEffect(glassEffect())
       .borderRadius(20)
       .margin({ bottom: 12 })
       .onClick(() => {
@@ -192,7 +194,8 @@ export struct ProcessPanel {
               .fontColor($r('sys.color.ohos_id_color_text_primary'))
               .maxLines(1)
               .textOverflow({ overflow: TextOverflow.Ellipsis })
-          }.padding(12).backgroundColor($r('sys.color.ohos_id_color_button_normal')).borderRadius(20).onClick(() => {
+          }.padding(12).backgroundColor($r('sys.color.ohos_id_color_button_normal')).backgroundEffect(glassEffect())
+            .borderRadius(20).onClick(() => {
             this.onCopy(url);
           })
         }, (url: string, index: number) => `${index}`)

@@ -1,5 +1,6 @@
-import { HdsListItemCard, SuffixArrow, SuffixSwitch } from '@kit.UIDesignKit';
+import { HdsListItemCard, SuffixArrow, SuffixCustomBuilder } from '@kit.UIDesignKit';
 import { TextModifier } from '@kit.ArkUI';
+import { createToggleMaterial, immersiveStateEnabled } from './ImmersiveLight';
 
 /**
  * 标记接口：所有可被 PreferenceGroup 渲染的列表项类型应实现此接口。
@@ -95,12 +96,39 @@ export struct SwitchItem {
   @Param checked: boolean = false;
   @Event onChange: (value: boolean) => void = () => {
   };
+  @Local useMaterial: boolean = false;
+
+  aboutToAppear(): void {
+    this.useMaterial = immersiveStateEnabled();
+  }
 
   hasSummary(): boolean {
     if (typeof this.summary === 'string') {
       return this.summary.length > 0;
     }
     return true;
+  }
+
+  handleToggle(isOn: boolean): void {
+    if (isOn !== this.checked) {
+      this.onChange(isOn);
+    }
+  }
+
+  @Builder
+  toggleSuffix() {
+    if (this.useMaterial) {
+      Toggle({ type: ToggleType.Switch, isOn: this.checked })
+        .onChange((isOn: boolean) => {
+          this.handleToggle(isOn);
+        })
+        .systemMaterial(createToggleMaterial())
+    } else {
+      Toggle({ type: ToggleType.Switch, isOn: this.checked })
+        .onChange((isOn: boolean) => {
+          this.handleToggle(isOn);
+        })
+    }
   }
 
   build() {
@@ -115,10 +143,8 @@ export struct SwitchItem {
             .textOverflow({ overflow: TextOverflow.Ellipsis }) : undefined
         } : undefined
       },
-      suffixItem: new SuffixSwitch({
-        isCheck: this.checked, onChange: (isCheck: boolean) => {
-          this.onChange(isCheck);
-        }
+      suffixItem: new SuffixCustomBuilder((): void => {
+        this.toggleSuffix()
       }),
       cardPrefixMargin: 0,
       cardSuffixMargin: 0,
